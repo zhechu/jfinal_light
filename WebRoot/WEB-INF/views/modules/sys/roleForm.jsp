@@ -146,7 +146,7 @@
 			<label class="control-label">是否系统数据:</label>
 			<div class="controls">
 				<form:select path="sysData">
-					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 				<span class="help-inline">“是”代表此数据只有超级管理员能进行修改，“否”则表示拥有角色修改人员的权限都能进行修改</span>
 			</div>
@@ -155,7 +155,7 @@
 			<label class="control-label">是否可用</label>
 			<div class="controls">
 				<form:select path="useable">
-					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 				<span class="help-inline">“是”代表此数据可用，“否”则表示此数据不可用</span>
 			</div>
@@ -164,7 +164,7 @@
 			<label class="control-label">数据范围:</label>
 			<div class="controls">
 				<form:select path="dataScope" class="input-medium">
-					<form:options items="${fns:getDictList('sys_data_scope')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('sys_data_scope')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 				<span class="help-inline">特殊情况下，设置为“按明细设置”，可进行跨机构授权</span>
 			</div>
@@ -185,9 +185,9 @@
 			</div>
 		</div>
 		<div class="form-actions">
-			<c:if test="${(role.sysData eq fns:getDictValue('是', 'yes_no', '1') && fns:getUser().admin)||!(role.sysData eq fns:getDictValue('是', 'yes_no', '1'))}">
+			<%-- <c:if test="${(role.sysData eq fns:getDictValue('是', 'yes_no', '1') && fns:getUser().admin)||!(role.sysData eq fns:getDictValue('是', 'yes_no', '1'))}">
 				<shiro:hasPermission name="sys:role:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
-			</c:if>
+			</c:if> --%>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>

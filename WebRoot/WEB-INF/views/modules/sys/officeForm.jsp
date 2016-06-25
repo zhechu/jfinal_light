@@ -64,7 +64,7 @@
 			<label class="control-label">机构类型:</label>
 			<div class="controls">
 				<form:select path="type" class="input-medium">
-					<form:options items="${fns:getDictList('sys_office_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('sys_office_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 			</div>
 		</div>
@@ -72,7 +72,7 @@
 			<label class="control-label">机构级别:</label>
 			<div class="controls">
 				<form:select path="grade" class="input-medium">
-					<form:options items="${fns:getDictList('sys_office_grade')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('sys_office_grade')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 			</div>
 		</div>
@@ -80,7 +80,7 @@
 			<label class="control-label">是否可用:</label>
 			<div class="controls">
 				<form:select path="useable">
-					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 				<span class="help-inline">“是”代表此账号允许登陆，“否”则表示此账号不允许登陆</span>
 			</div>
@@ -145,7 +145,7 @@
 			<div class="control-group">
 				<label class="control-label">快速添加下级部门:</label>
 				<div class="controls">
-					<form:checkboxes path="childDeptList" items="${fns:getDictList('sys_office_common')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:checkboxes path="childDeptList" items="${fns:getDictList('sys_office_common')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</div>
 			</div>
 		</c:if>

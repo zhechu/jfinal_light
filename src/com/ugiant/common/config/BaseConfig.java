@@ -12,6 +12,8 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.ViewType;
+import com.ugiant.common.dict.Table;
+import com.ugiant.modules.sys.model.Menu;
 import com.ugiant.modules.sys.route.SystemRoute;
 
 /**
@@ -42,6 +44,8 @@ public class BaseConfig extends JFinalConfig {
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
 		arp.setShowSql(true);
 		me.add(arp);
+		
+		arp.addMapping(Table.SYS_MENU, Menu.class); // 菜单
 	}
 
 	@Override

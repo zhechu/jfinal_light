@@ -1,4 +1,4 @@
-package com.ugiant.modules.sys.web;
+package com.ugiant.common.web;
 
 import com.ugiant.common.web.BaseController;
 
@@ -10,10 +10,17 @@ import com.ugiant.common.web.BaseController;
 public class PublicController extends BaseController {
 
 	/**
-	 * 进入首页
+	 * 进入系统设置页
 	 */
 	public void index() {
-		this.render("index.jsp");
+		this.render("sysIndex.jsp");
+	}
+	
+	/**
+	 * 进入用户管理页
+	 */
+	public void userList() {
+		this.render("userList.jsp");
 	}
 	
 }

@@ -57,7 +57,7 @@
 			<label class="control-label">区域类型:</label>
 			<div class="controls">
 				<form:select path="type" class="input-medium">
-					<form:options items="${fns:getDictList('sys_area_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<%-- <form:options items="${fns:getDictList('sys_area_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
 				</form:select>
 			</div>
 		</div>

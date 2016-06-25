@@ -77,7 +77,7 @@
 		<div class="control-group">
 			<label class="control-label">可见:</label>
 			<div class="controls">
-				<form:radiobuttons path="isShow" items="${fns:getDictList('show_hide')}" itemLabel="label" itemValue="value" htmlEscape="false" class="required"/>
+				<%-- <form:radiobuttons path="isShow" items="${fns:getDictList('show_hide')}" itemLabel="label" itemValue="value" htmlEscape="false" class="required"/> --%>
 				<span class="help-inline">该菜单或操作是否显示到系统菜单中</span>
 			</div>
 		</div>
