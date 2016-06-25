@@ -25,7 +25,7 @@ public class Menu extends BaseModel<Menu> {
 		sql.append(" from sys_menu a");
 		sql.append(" left join sys_menu p on p.id = a.parent_id");
 		sql.append(" order by a.sort");
-		return Menu.dao.find(sql.toString());
+		return dao.find(sql.toString());
 	}
 
 }

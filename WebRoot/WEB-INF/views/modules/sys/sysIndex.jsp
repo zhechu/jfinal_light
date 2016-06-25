@@ -138,6 +138,14 @@
 			<div class="navbar-inner">
 				<div class="brand"><span id="productName">jfinal快速开发框架</span></div>
 				<ul id="userControl" class="nav pull-right">
+					<li id="themeSwitch" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="主题切换"><i class="icon-th-large"></i></a>
+						<ul class="dropdown-menu">
+							<c:forEach items="${fns:getDictList('theme')}" var="dict"><li><a href="#" onclick="location='${pageContext.request.contextPath}/theme?theme=${dict.value}&url='+location.href">${dict.label}</a></li></c:forEach>
+							<li><a href="javascript:cookie('tabmode','${tabmode eq '1' ? '0' : '1'}');location=location.href">${tabmode eq '1' ? '关闭' : '开启'}页签模式</a></li>
+						</ul>
+						<!--[if lte IE 6]><script type="text/javascript">$('#themeSwitch').hide();</script><![endif]-->
+					</li>
 					<li id="userInfo" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" title="个人信息">您好, &nbsp;<span id="notifyNum" class="label label-info hide"></span></a>
 						<ul class="dropdown-menu">

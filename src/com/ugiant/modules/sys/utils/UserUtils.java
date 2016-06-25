@@ -16,7 +16,7 @@ public class UserUtils {
 	private UserUtils() {}
 	
 	/**
-	 * 菜单
+	 * 菜单列表
 	 * @return
 	 */
 	public static List<Menu> getMenuList(){

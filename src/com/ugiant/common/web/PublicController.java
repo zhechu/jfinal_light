@@ -1,6 +1,8 @@
 package com.ugiant.common.web;
 
-import com.ugiant.common.web.BaseController;
+import org.apache.commons.lang3.StringUtils;
+
+import com.ugiant.common.utils.CookieUtils;
 
 /**
  * 后台公开路由（无需登录） 控制器
@@ -10,17 +12,15 @@ import com.ugiant.common.web.BaseController;
 public class PublicController extends BaseController {
 
 	/**
-	 * 进入系统设置页
+	 * 切换主题
 	 */
-	public void index() {
-		this.render("sysIndex.jsp");
+	public void theme(){
+		String theme = this.getPara("theme");
+		if (StringUtils.isNotBlank(theme)){
+			CookieUtils.setCookie(this.getResponse(), "theme", theme);
+		}else{
+			theme = CookieUtils.getCookie(this.getRequest(), "theme");
+		}
+		this.redirect(this.getPara("url"));
 	}
-	
-	/**
-	 * 进入用户管理页
-	 */
-	public void userList() {
-		this.render("userList.jsp");
-	}
-	
 }

@@ -7,6 +7,7 @@ import com.ugiant.modules.sys.web.DictController;
 import com.ugiant.modules.sys.web.MenuController;
 import com.ugiant.modules.sys.web.OfficeController;
 import com.ugiant.modules.sys.web.RoleController;
+import com.ugiant.modules.sys.web.SystemController;
 import com.ugiant.modules.sys.web.UserController;
 
 /**
@@ -21,7 +22,9 @@ public class SystemRoute extends BaseRoutes {
 	@Override
 	public void config() {
 		
-		this.add("/a", PublicController.class, SYS_PATH);
+		this.add("/", PublicController.class, SYS_PATH); // 公开
+		
+		this.add("/a", SystemController.class, SYS_PATH); // 系统
 		
 		this.add("/a/sys/menu", MenuController.class, SYS_PATH); // 菜单
 		

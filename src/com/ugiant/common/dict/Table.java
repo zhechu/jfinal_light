@@ -11,4 +11,6 @@ public class Table {
 	
 	public final static String SYS_MENU = "sys_menu"; // 菜单
 	
+	public final static String SYS_DICT = "sys_dict"; // 字典
+	
 }
