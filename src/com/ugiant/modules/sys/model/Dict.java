@@ -25,7 +25,7 @@ public class Dict extends BaseModel<Dict> {
 		sql.append("select a.*");
 		sql.append(" from sys_dict a");
 		sql.append(" where a.type = ?");
-		sql.append(" order by type, sort, update_date desc");
+		sql.append(" order by a.type, a.sort, a.update_date desc");
 		return dao.find(sql.toString(), type);
 	}
 

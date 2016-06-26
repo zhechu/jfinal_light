@@ -13,4 +13,10 @@ public class Table {
 	
 	public final static String SYS_DICT = "sys_dict"; // 字典
 	
+	public final static String SYS_AREA = "sys_area"; // 区域
+	
+	public final static String SYS_OFFICE = "sys_office"; // 机构
+	
+	public final static String SYS_USER = "sys_user"; // 用户
+	
 }

@@ -13,8 +13,11 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.ViewType;
 import com.ugiant.common.dict.Table;
+import com.ugiant.modules.sys.model.Area;
 import com.ugiant.modules.sys.model.Dict;
 import com.ugiant.modules.sys.model.Menu;
+import com.ugiant.modules.sys.model.Office;
+import com.ugiant.modules.sys.model.User;
 import com.ugiant.modules.sys.route.SystemRoute;
 
 /**
@@ -48,6 +51,9 @@ public class BaseConfig extends JFinalConfig {
 		
 		arp.addMapping(Table.SYS_MENU, Menu.class); // 菜单
 		arp.addMapping(Table.SYS_DICT, Dict.class); // 字典
+		arp.addMapping(Table.SYS_AREA, Area.class); // 区域
+		arp.addMapping(Table.SYS_OFFICE, Office.class); // 机构
+		arp.addMapping(Table.SYS_USER, User.class); // 用户
 	}
 
 	@Override

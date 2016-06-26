@@ -1,0 +1,1 @@
+alter table sys_office change `USEABLE` `useable` char(1);

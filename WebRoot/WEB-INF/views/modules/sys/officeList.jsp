@@ -5,6 +5,27 @@
 	<title>机构管理</title>
 	<meta name="decorator" content="default"/>
 	<%@include file="/WEB-INF/views/include/treetable.jsp" %>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var tpl = $("#treeTableTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
+			var data = ${fns:toJson(list)}, rootId = "${not empty office.id ? office.id : '0'}";
+			addRow("#treeTableList", tpl, data, rootId, true);
+			$("#treeTable").treeTable({expandLevel : 5});
+		});
+		function addRow(list, tpl, data, pid, root){
+			for (var i=0; i<data.length; i++){
+				var row = data[i];
+				if (row.parent_id == pid){
+					$(list).append(Mustache.render(tpl, {
+						dict: {
+							type: getDictLabel(${fns:toJson(fns:getDictList('sys_office_type'))}, row.type)
+						}, pid: (root?0:pid), row: row
+					}));
+					addRow(list, tpl, data, row.id);
+				}
+			}
+		}
+	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
@@ -19,7 +40,7 @@
 	<script type="text/template" id="treeTableTpl">
 		<tr id="{{row.id}}" pId="{{pid}}">
 			<td><a href="${ctx}/sys/office/form?id={{row.id}}">{{row.name}}</a></td>
-			<td>{{row.area.name}}</td>
+			<td>{{row.area_name}}</td>
 			<td>{{row.code}}</td>
 			<td>{{dict.type}}</td>
 			<td>{{row.remarks}}</td>

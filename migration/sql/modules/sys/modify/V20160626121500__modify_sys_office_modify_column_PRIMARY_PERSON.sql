@@ -1,0 +1,1 @@
+alter table sys_office change `PRIMARY_PERSON` `primary_person` int(11);

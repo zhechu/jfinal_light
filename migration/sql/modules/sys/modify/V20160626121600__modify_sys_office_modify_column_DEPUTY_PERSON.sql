@@ -1,0 +1,1 @@
+alter table sys_office change `DEPUTY_PERSON` `deputy_person` int(11);

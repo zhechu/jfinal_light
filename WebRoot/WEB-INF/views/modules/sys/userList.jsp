@@ -45,13 +45,13 @@
 	<form:form id="searchForm" modelAttribute="user" action="${ctx}/sys/user/list" method="post" class="breadcrumb form-search ">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
-		<sys:tableSort id="orderBy" name="orderBy" value="${page.orderBy}" callback="page();"/>
+		<%-- <sys:tableSort id="orderBy" name="orderBy" value="${page.orderBy}" callback="page();"/> --%>
 		<ul class="ul-form">
-			<li><label>归属公司：</label><sys:treeselect id="company" name="company.id" value="${user.company.id}" labelName="company.name" labelValue="${user.company.name}" 
+			<li><label>归属公司：</label><sys:treeselect id="company" name="company.id" value="${user.company_id}" labelName="company.name" labelValue="${user.company_name}" 
 				title="公司" url="/sys/office/treeData?type=1" cssClass="input-small" allowClear="true"/></li>
 			<li><label>登录名：</label><form:input path="loginName" htmlEscape="false" maxlength="50" class="input-medium"/></li>
 			<li class="clearfix"></li>
-			<li><label>归属部门：</label><sys:treeselect id="office" name="office.id" value="${user.office.id}" labelName="office.name" labelValue="${user.office.name}" 
+			<li><label>归属部门：</label><sys:treeselect id="office" name="office.id" value="${user.office_id}" labelName="office.name" labelValue="${user.office_name}" 
 				title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/></li>
 			<li><label>姓&nbsp;&nbsp;&nbsp;名：</label><form:input path="name" htmlEscape="false" maxlength="50" class="input-medium"/></li>
 			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询" onclick="return page();"/>
@@ -66,9 +66,9 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="user">
 			<tr>
-				<td>${user.company.name}</td>
-				<td>${user.office.name}</td>
-				<td><a href="${ctx}/sys/user/form?id=${user.id}">${user.loginName}</a></td>
+				<td>${user.company_name}</td>
+				<td>${user.office_name}</td>
+				<td><a href="${ctx}/sys/user/form?id=${user.id}">${user.login_name}</a></td>
 				<td>${user.name}</td>
 				<td>${user.phone}</td>
 				<td>${user.mobile}</td><%--
