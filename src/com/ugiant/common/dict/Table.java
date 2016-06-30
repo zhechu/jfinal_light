@@ -19,4 +19,6 @@ public class Table {
 	
 	public final static String SYS_USER = "sys_user"; // 用户
 	
+	public final static String SYS_ROLE = "sys_role"; // 角色
+	
 }

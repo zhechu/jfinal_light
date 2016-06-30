@@ -20,7 +20,7 @@ public class UserUtils {
 	 * @return
 	 */
 	public static List<Menu> getMenuList(){
-		List<Menu> menuList = menuDao.findAllList();
+		List<Menu> menuList = menuDao.findAll();
 		return menuList;
 	}
 	

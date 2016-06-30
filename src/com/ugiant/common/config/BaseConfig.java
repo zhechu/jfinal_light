@@ -17,6 +17,7 @@ import com.ugiant.modules.sys.model.Area;
 import com.ugiant.modules.sys.model.Dict;
 import com.ugiant.modules.sys.model.Menu;
 import com.ugiant.modules.sys.model.Office;
+import com.ugiant.modules.sys.model.Role;
 import com.ugiant.modules.sys.model.User;
 import com.ugiant.modules.sys.route.SystemRoute;
 
@@ -54,6 +55,7 @@ public class BaseConfig extends JFinalConfig {
 		arp.addMapping(Table.SYS_AREA, Area.class); // 区域
 		arp.addMapping(Table.SYS_OFFICE, Office.class); // 机构
 		arp.addMapping(Table.SYS_USER, User.class); // 用户
+		arp.addMapping(Table.SYS_ROLE, Role.class); // 角色
 	}
 
 	@Override

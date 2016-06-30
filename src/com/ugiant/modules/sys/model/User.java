@@ -1,7 +1,7 @@
 package com.ugiant.modules.sys.model;
 
+import com.jfinal.plugin.activerecord.Page;
 import com.ugiant.common.model.BaseModel;
-import com.ugiant.common.model.Page;
 import com.ugiant.common.utils.PageUtils;
 
 /**
@@ -22,7 +22,7 @@ public class User extends BaseModel<User> {
 	 * @param user 用户对象
 	 * @return
 	 */
-	public com.ugiant.common.model.Page<User> findPageByUser(int pageNo, int pageSize, User user) {
+	public Page<User> findPageByUser(int pageNo, int pageSize, User user) {
 		StringBuilder select = new StringBuilder();
 		select.append("select a.*");
 		select.append(", c.name company_name, c.parent_id company_parent_id, c.parent_ids company_parent_ids");
@@ -44,7 +44,7 @@ public class User extends BaseModel<User> {
 		sqlExceptSelect.append(" left join sys_user ou on ou.id = o.primary_person");
 		sqlExceptSelect.append(" left join sys_user ou2 on ou2.id = o.deputy_person");
 		// TODO
-		return (Page<User>) PageUtils.getPage(dao, pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
+		return PageUtils.getPage(dao, pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
 	}
 	
 }
