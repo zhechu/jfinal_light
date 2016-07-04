@@ -37,13 +37,13 @@
 		<li><a href="${ctx}/sys/user/list">用户列表</a></li>
 		<li class="active"><a href="${ctx}/sys/user/form?id=${user.id}">用户<shiro:hasPermission name="sys:user:edit">${not empty user.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:user:edit">查看</shiro:lacksPermission></a></li>
 	</ul><br/>
-	<form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/user/save" method="post" class="form-horizontal">
-		<form:hidden path="id"/>
+	<form id="inputForm" action="${ctx}/sys/user/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id">
 		<sys:message content="${message}"/>
 		<div class="control-group">
 			<label class="control-label">头像:</label>
 			<div class="controls">
-				<form:hidden id="nameImage" path="photo" htmlEscape="false" maxlength="255" class="input-xlarge"/>
+				<input type="hidden" id="nameImage" name="photo" maxlength="255" class="input-xlarge"/>
 				<sys:ckfinder input="nameImage" type="images" uploadPath="/photo" selectMultiple="false" maxWidth="100" maxHeight="100"/>
 			</div>
 		</div>
@@ -64,14 +64,14 @@
 		<div class="control-group">
 			<label class="control-label">工号:</label>
 			<div class="controls">
-				<form:input path="no" htmlEscape="false" maxlength="50" class="required"/>
+				<input type="text" name="no" maxlength="50" class="required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">姓名:</label>
 			<div class="controls">
-				<form:input path="name" htmlEscape="false" maxlength="50" class="required"/>
+				<input type="text" name="name" maxlength="50" class="required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
@@ -79,7 +79,7 @@
 			<label class="control-label">登录名:</label>
 			<div class="controls">
 				<input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName}">
-				<form:input path="loginName" htmlEscape="false" maxlength="50" class="required userName"/>
+				<input type="text" name="loginName" maxlength="50" class="required userName"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
@@ -101,50 +101,59 @@
 		<div class="control-group">
 			<label class="control-label">邮箱:</label>
 			<div class="controls">
-				<form:input path="email" htmlEscape="false" maxlength="100" class="email"/>
+				<input type="email" name="email" maxlength="100" class="email"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">电话:</label>
 			<div class="controls">
-				<form:input path="phone" htmlEscape="false" maxlength="100"/>
+				<input type="text" name="phone" maxlength="100"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">手机:</label>
 			<div class="controls">
-				<form:input path="mobile" htmlEscape="false" maxlength="100"/>
+				<input type="text" name="mobile" maxlength="100"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">是否允许登录:</label>
 			<div class="controls">
-				<form:select path="loginFlag">
-					<%-- <form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
-				</form:select>
+				<select name="loginFlag">
+					<c:forEach items="${fns:getDictList('yes_no')}" var="dict">
+						<option value="${dict.value }">${dict.label }</option>
+					</c:forEach>
+				</select>
 				<span class="help-inline"><font color="red">*</font> “是”代表此账号允许登录，“否”则表示此账号不允许登录</span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">用户类型:</label>
 			<div class="controls">
-				<form:select path="userType" class="input-xlarge">
-					<form:option value="" label="请选择"/>
-					<%-- <form:options items="${fns:getDictList('sys_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
-				</form:select>
+				<select name="userType" class="input-xlarge">
+					<option value="" label="请选择"/>
+					<c:forEach items="${fns:getDictList('sys_user_type')}" var="dict">
+						<option value="${dict.value }">${dict.label }</option>
+					</c:forEach>
+				</select>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">
-				<form:checkboxes path="roleIdList" items="${allRoles}" itemLabel="name" itemValue="id" htmlEscape="false" class="required"/>
+				<c:forEach items="${allRoles}" var="role">
+					<span>
+						<input type="checkbox" id="roleIdList${role.id }" name="roleIdList" value="${role.id }" class="required">
+						<label for="roleIdList${role.id }">${role.name }</label>
+					</span>
+				</c:forEach>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">备注:</label>
 			<div class="controls">
-				<form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="input-xlarge"/>
+				<textarea name="remarks" rows="3" maxlength="200" class="input-xlarge"></textarea>
 			</div>
 		</div>
 		<c:if test="${not empty user.id}">
@@ -165,6 +174,6 @@
 			<shiro:hasPermission name="sys:user:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
-	</form:form>
+	</form>
 </body>
 </html>

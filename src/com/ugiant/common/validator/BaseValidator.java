@@ -3,6 +3,7 @@ package com.ugiant.common.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.jfinal.kit.PropKit;
 import com.jfinal.validate.Validator;
 
 /**
@@ -12,6 +13,11 @@ import com.jfinal.validate.Validator;
  */
 public abstract class BaseValidator extends Validator {
 
+	/**
+	 * 管理基础路径
+	 */
+	protected String adminPath = PropKit.get("adminPath");
+	
 	/**
 	 * 验证字符串
 	 * @param value 值

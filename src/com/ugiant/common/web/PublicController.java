@@ -1,11 +1,13 @@
 package com.ugiant.common.web;
 
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.jfinal.render.CaptchaRender;
 import com.ugiant.common.utils.CookieUtils;
 
 /**
- * 后台公开路由（无需登录） 控制器
+ * 公共 控制器
  * @author lingyuwang
  *
  */
@@ -23,4 +25,13 @@ public class PublicController extends BaseController {
 		}
 		this.redirect(this.getPara("url"));
 	}
+
+	/**
+	 * 生成验证码
+	 */
+	public void captchaImg() {
+		CaptchaRender img = new CaptchaRender();  
+        this.render(img);  
+	}
+	
 }

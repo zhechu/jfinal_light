@@ -35,8 +35,8 @@
 		<li><a href="${ctx}/sys/user/info">个人信息</a></li>
 		<li class="active"><a href="${ctx}/sys/user/modifyPwd">修改密码</a></li>
 	</ul><br/>
-	<form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/user/modifyPwd" method="post" class="form-horizontal">
-		<form:hidden path="id"/>
+	<form id="inputForm" action="${ctx}/sys/user/modifyPwd" method="post" class="form-horizontal">
+		<input type="hidden" name="id">
 		<sys:message content="${message}"/>
 		<div class="control-group">
 			<label class="control-label">旧密码:</label>
@@ -62,6 +62,6 @@
 		<div class="form-actions">
 			<input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>
 		</div>
-	</form:form>
+	</form>
 </body>
 </html>

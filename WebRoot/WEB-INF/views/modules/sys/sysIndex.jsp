@@ -16,13 +16,14 @@
 	</style>
 	<script type="text/javascript">
 		$(document).ready(function() {
+			console.log("${tabmode}");
 			// <c:if test="${tabmode eq '1'}"> 初始化页签
 			$.fn.initJerichoTab({
                 renderTo: '#right', uniqueId: 'jerichotab',
                 contentCss: { 'height': $('#right').height() - tabTitleHeight },
                 tabs: [], loadOnce: true, tabWidth: 110, titleHeight: tabTitleHeight
             });//</c:if>
-         // 绑定菜单单击事件
+			// 绑定菜单单击事件
 			$("#menu a.menu").click(function(){
 				// 一级菜单焦点
 				$("#menu li.menu").removeClass("active");
@@ -154,7 +155,7 @@
 							<li><a href="" target="mainFrame"><i class="icon-bell"></i>&nbsp;  我的通知 <span id="notifyNum2" class="label label-info hide"></span></a></li>
 						</ul>
 					</li>
-					<li><a href="" title="退出登录">退出</a></li>
+					<li><a href="${ctx}/logout" title="退出登录">退出</a></li>
 					<li>&nbsp;</li>
 				</ul>
 				<div class="nav-collapse">

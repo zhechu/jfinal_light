@@ -1,0 +1,1 @@
+alter table sys_role modify column is_sys char(1) default '1' comment '是否系统数据';

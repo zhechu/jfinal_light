@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.ugiant.common.service.BaseService;
 import com.ugiant.modules.sys.model.Dict;
 
 /**
@@ -11,7 +12,7 @@ import com.ugiant.modules.sys.model.Dict;
  * @author lingyuwang
  *
  */
-public class DictService {
+public class DictService extends BaseService {
 	
 	public static final DictService service = new DictService(); // 字典单例
 

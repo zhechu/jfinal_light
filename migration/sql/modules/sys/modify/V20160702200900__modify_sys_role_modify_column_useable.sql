@@ -1,0 +1,1 @@
+alter table sys_role modify column useable char(1) default '1' comment '是否可用';

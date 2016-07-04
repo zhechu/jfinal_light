@@ -8,6 +8,8 @@ import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
+import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
+import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
@@ -27,7 +29,12 @@ import com.ugiant.modules.sys.route.SystemRoute;
  *
  */
 public class BaseConfig extends JFinalConfig {
-
+	
+	/**
+     * 供Shiro插件使用。
+     */
+    Routes routes;
+    
 	@Override
 	public void configConstant(Constants me) {
 		PropKit.use("config.properties");
@@ -37,6 +44,7 @@ public class BaseConfig extends JFinalConfig {
 
 	@Override
 	public void configRoute(Routes me) {
+		this.routes = me;
 		me.add(new SystemRoute()); // 系统路由
 	}
 
@@ -56,11 +64,17 @@ public class BaseConfig extends JFinalConfig {
 		arp.addMapping(Table.SYS_OFFICE, Office.class); // 机构
 		arp.addMapping(Table.SYS_USER, User.class); // 用户
 		arp.addMapping(Table.SYS_ROLE, Role.class); // 角色
+		
+		ShiroPlugin shiroPlugin = new ShiroPlugin(this.routes);
+		shiroPlugin.setLoginUrl(PropKit.get("adminPath")+"/login");
+		shiroPlugin.setSuccessUrl(PropKit.get("adminPath"));
+		shiroPlugin.setUnauthorizedUrl(PropKit.get("adminPath")+"/login");
+		me.add(shiroPlugin);
 	}
 
 	@Override
 	public void configInterceptor(Interceptors me) {
-		
+		me.add(new ShiroInterceptor());
 	}
 	
 	@Override

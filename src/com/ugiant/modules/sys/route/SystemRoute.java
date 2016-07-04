@@ -22,21 +22,21 @@ public class SystemRoute extends BaseRoutes {
 	@Override
 	public void config() {
 		
-		this.add("/", PublicController.class, SYS_PATH); // 公开
+		this.add("/", PublicController.class); // 公共
 		
-		this.add("/a", SystemController.class, SYS_PATH); // 系统
+		this.add(adminPath, SystemController.class, SYS_PATH); // 系统
 		
-		this.add("/a/sys/menu", MenuController.class, SYS_PATH); // 菜单
+		this.add(adminPath+"/sys/menu", MenuController.class, SYS_PATH); // 菜单
 		
-		this.add("/a/sys/user", UserController.class, SYS_PATH); // 用户
+		this.add(adminPath+"/sys/user", UserController.class, SYS_PATH); // 用户
 		
-		this.add("/a/sys/office", OfficeController.class, SYS_PATH); // 机构
+		this.add(adminPath+"/sys/office", OfficeController.class, SYS_PATH); // 机构
 		
-		this.add("/a/sys/area", AreaController.class, SYS_PATH); // 区域
+		this.add(adminPath+"/sys/area", AreaController.class, SYS_PATH); // 区域
 		
-		this.add("/a/sys/role", RoleController.class, SYS_PATH); // 角色
+		this.add(adminPath+"/sys/role", RoleController.class, SYS_PATH); // 角色
 		
-		this.add("/a/sys/dict", DictController.class, SYS_PATH); // 字典
+		this.add(adminPath+"/sys/dict", DictController.class, SYS_PATH); // 字典
 		
 	}
 }

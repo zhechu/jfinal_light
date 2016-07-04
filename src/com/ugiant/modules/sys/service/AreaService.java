@@ -2,6 +2,7 @@ package com.ugiant.modules.sys.service;
 
 import java.util.List;
 
+import com.ugiant.common.service.BaseService;
 import com.ugiant.modules.sys.model.Area;
 
 /**
@@ -9,7 +10,7 @@ import com.ugiant.modules.sys.model.Area;
  * @author lingyuwang
  *
  */
-public class AreaService {
+public class AreaService extends BaseService {
 	
 	public static final AreaService service = new AreaService(); // 区域单例
 
