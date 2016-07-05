@@ -2,6 +2,8 @@ package com.ugiant.modules.sys.model;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.model.BaseModel;
 
 /**
@@ -19,13 +21,13 @@ public class Menu extends BaseModel<Menu> {
 	 * 获取所有菜单
 	 * @return
 	 */
-	public List<Menu> findAll() {
+	public List<Record> findAll() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select a.*, p.name parent_name");
 		sql.append(" from sys_menu a");
 		sql.append(" left join sys_menu p on p.id = a.parent_id");
 		sql.append(" order by a.sort");
-		return dao.find(sql.toString());
+		return Db.find(sql.toString());
 	}
 
 	/**
@@ -43,10 +45,10 @@ public class Menu extends BaseModel<Menu> {
 	 * @param parentId 父id
 	 * @param cascade 是否级联
 	 */
-	public static void sortList(List<Menu> list, List<Menu> sourcelist, Integer parentId, boolean cascade){
-		Menu e = null; // 当前菜单
+	public static void sortList(List<Record> list, List<Record> sourcelist, Integer parentId, boolean cascade){
+		Record e = null; // 当前菜单
 		Integer parent_id = null; // 当前菜单父id
-		Menu child = null; // 当前菜单子菜单
+		Record child = null; // 当前菜单子菜单
 		Integer child_parent_id = null; // 当前菜单子菜单父id
 		Integer id = null; // 当前菜单id
 		for (int i=0; i<sourcelist.size(); i++){

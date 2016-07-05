@@ -28,7 +28,7 @@ public class DictController extends BaseController {
 		int pageNo = PageUtils.getPageNo(this.getParaToInt("pageNo"));
 		int pageSize = PageUtils.getPageSize(this.getParaToInt("pageSize"));
 		Dict dict = this.getModel(Dict.class); // 字典
-		Page<Dict> page = dictService.findPageByDict(pageNo, pageSize, dict);
+		Page<Record> page = dictService.findPageByDict(pageNo, pageSize, dict);
         this.setAttr("page", page);
 		this.render("dictList.jsp");
 	}

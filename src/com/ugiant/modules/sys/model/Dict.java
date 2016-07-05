@@ -26,13 +26,13 @@ public class Dict extends BaseModel<Dict> {
 	 * @param type 类型
 	 * @return
 	 */
-	public List<Dict> findByType(String type) {
+	public List<Record> findByType(String type) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select a.*");
 		sql.append(" from sys_dict a");
 		sql.append(" where a.type = ?");
 		sql.append(" order by a.type, a.sort, a.update_date desc");
-		return dao.find(sql.toString(), type);
+		return Db.find(sql.toString(), type);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class Dict extends BaseModel<Dict> {
 	 * @param dict 字典对象
 	 * @return
 	 */
-	public Page<Dict> findPageByDict(int pageNo, int pageSize, Dict dict) {
+	public Page<Record> findPageByDict(int pageNo, int pageSize, Dict dict) {
 		StringBuilder select = new StringBuilder();
 		select.append("select a.*");
 		StringBuilder sqlExceptSelect = new StringBuilder();
@@ -69,7 +69,7 @@ public class Dict extends BaseModel<Dict> {
 		if (StringUtils.isNotBlank(description)) {
 			sqlExceptSelect.append(" and a.description = ").append(description);
 		}
-		return PageUtils.getPage(dao, pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
+		return PageUtils.getPage(pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
 	}
 	
 }

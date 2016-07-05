@@ -2,6 +2,7 @@ package com.ugiant.modules.sys.service;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.service.BaseService;
 import com.ugiant.modules.sys.model.Area;
 
@@ -20,7 +21,7 @@ public class AreaService extends BaseService {
 	 * 获取所有区域列表
 	 * @return
 	 */
-	public List<Area> findAll() {
+	public List<Record> findAll() {
 		return areaDao.findAll();
 	}
 	

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.dict.Useable;
 import com.ugiant.common.model.BaseModel;
 
@@ -25,14 +27,14 @@ public class Role extends BaseModel<Role> {
 	static {
 		StringBuilder roleColumnsSb = new StringBuilder();
 		roleColumnsSb.append(" a.*");
-		roleColumnsSb.append(", o.name office_name, o.code office_code");
+		//roleColumnsSb.append(", o.name office_name, o.code office_code");
 		roleColumns = roleColumnsSb.toString();
 		
 		StringBuilder roleJoinsSb = new StringBuilder();
-		roleJoinsSb.append(" left join sys_office o on o.id = a.office_id");
 		roleJoinsSb.append(" left join sys_user_role ur on ur.role_id = a.id");
 		roleJoinsSb.append(" left join sys_user u on u.id = ur.user_id");
-		roleJoinsSb.append(" left join sys_role_office ro on ro.role_id = a.id");
+		//roleJoinsSb.append(" left join sys_role_office ro on ro.role_id = a.id");
+		//roleJoinsSb.append(" left join sys_office o on o.id = a.office_id");
 		roleJoins = roleJoinsSb.toString();
 	}
 	
@@ -40,12 +42,12 @@ public class Role extends BaseModel<Role> {
 	 * 获取所有角色列表
 	 * @return
 	 */
-	public List<Role> findAll() {
+	public List<Record> findAll() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select a.*");
 		sql.append(" from sys_role a");
 		sql.append(" order by a.update_date desc");
-		return dao.find(sql.toString());
+		return Db.find(sql.toString());
 	}
 	
 	/**
@@ -54,17 +56,17 @@ public class Role extends BaseModel<Role> {
 	 * @param userId 用户 id
 	 * @return
 	 */
-	public List<Role> findByUserId(String useable, Integer userId) {
+	public List<Record> findByUserId(String useable, Integer userId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(roleColumns);
-		sql.append(", ro.office_id office_list_id");
+		//sql.append(", ro.office_id office_list_id");
 		sql.append(" from sys_role a").append(roleJoins);
 		sql.append(" where u.id = ?");
 		if (StringUtils.isNotBlank(useable)) {
 			sql.append(" and a.useable = '").append(useable).append("'");
 		}
 		sql.append(" order by a.update_date desc");
-		return dao.find(sql.toString(), userId);
+		return Db.find(sql.toString(), userId);
 	}
 	
 	/**
@@ -72,7 +74,7 @@ public class Role extends BaseModel<Role> {
 	 * @param userId 用户 id
 	 * @return
 	 */
-	public List<Role> findByUserId(Integer userId) {
+	public List<Record> findByUserId(Integer userId) {
 		return findByUserId(Useable.YES, userId);
 	}
 	
@@ -82,17 +84,17 @@ public class Role extends BaseModel<Role> {
 	 * @param loginName 登录名
 	 * @return
 	 */
-	public List<Role> findByLoginName(String useable, String loginName) {
+	public List<Record> findByLoginName(String useable, String loginName) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(roleColumns);
-		sql.append(", ro.office_id office_list_id");
+		//sql.append(", ro.office_id office_list_id");
 		sql.append(" from sys_role a").append(roleJoins);
 		sql.append(" where u.login_name = ?");
 		if (StringUtils.isNotBlank(useable)) {
 			sql.append(" and a.useable = '").append(useable).append("'");
 		}
 		sql.append(" order by a.update_date desc");
-		return dao.find(sql.toString(), loginName);
+		return Db.find(sql.toString(), loginName);
 	}
 	
 	/**
@@ -100,7 +102,7 @@ public class Role extends BaseModel<Role> {
 	 * @param loginName 登录名
 	 * @return
 	 */
-	public List<Role> findByLoginName(String loginName) {
+	public List<Record> findByLoginName(String loginName) {
 		return findByLoginName(Useable.YES, loginName);
 	}
 

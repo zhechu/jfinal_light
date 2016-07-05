@@ -9,17 +9,18 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.dict.Useable;
-import com.ugiant.modules.sys.model.Menu;
-import com.ugiant.modules.sys.model.Role;
-import com.ugiant.modules.sys.model.User;
+import com.ugiant.common.utils.Encodes;
 import com.ugiant.modules.sys.service.SystemService;
 import com.ugiant.modules.sys.utils.UserUtils;
 /**
@@ -31,20 +32,30 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 
 	private SystemService systemService = SystemService.service;
 
-    /**
+    public SystemAuthorizingRealm() {
+		super();
+		// 设定密码校验的Hash算法与迭代次数
+		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(SystemService.HASH_ALGORITHM);
+		matcher.setHashIterations(SystemService.HASH_INTERATIONS);
+		setCredentialsMatcher(matcher);
+	}
+
+	/**
      * 认证回调函数,登录时调用.
      */
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		// 校验用户名密码
-		User user = systemService.getUserByLoginName(token.getUsername());
+        Record user = systemService.getUserByLoginName(token.getUsername());
 		if (user != null) {
 			if (Useable.NO.equals(user.getStr("login_flag"))){
 				throw new AuthenticationException("msg:该已帐号禁止登录.");
 			}
+			byte[] salt = Encodes.decodeHex(user.getStr("password").substring(0,16));
 			return new SimpleAuthenticationInfo(
 					new Principal(user),
-					user.getStr("password"),
+					user.getStr("password").substring(16),
+					ByteSource.Util.bytes(salt),
 					getName());
 		}
 		return null;
@@ -54,12 +65,13 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
      * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
      */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-    	String loginName = (String) principals.fromRealm(getName()).iterator().next();
-    	User user = systemService.getUserByLoginName(loginName);
+    	Principal principal = (Principal) principals.fromRealm(getName()).iterator().next();
+    	String loginName = principal.getLoginName();
+    	Record user = systemService.getUserByLoginName(loginName);
 		if (user != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-			List<Menu> list = UserUtils.getMenuList();
-			for (Menu menu : list){
+			List<Record> list = UserUtils.getMenuList();
+			for (Record menu : list){
 				String permission = menu.getStr("permission");
 				if (StringUtils.isNotBlank(permission)){
 					// 添加基于Permission的权限信息
@@ -71,12 +83,12 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 			// 添加用户权限
 			info.addStringPermission("user");
 			// 添加用户角色信息
-			List<Role> roleList = user.getRoleList();
+			/*List<Role> roleList = user.getRoleList();
 			for (Role role : roleList){
 				info.addRole(role.getStr("enname"));
-			}
+			}*/
 			// 更新登录IP和时间
-			systemService.updateUserLoginInfo(user);
+			//systemService.updateUserLoginInfo(user);
 			return info;
 		} else {
 			return null;
@@ -102,7 +114,15 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
             }
         }
     }
- 
+
+	/**
+	 * 设定密码校验的Hash算法与迭代次数
+	 */
+	public void initCredentialsMatcher() {
+		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(SystemService.HASH_ALGORITHM);
+		matcher.setHashIterations(SystemService.HASH_INTERATIONS);
+		setCredentialsMatcher(matcher);
+	}
 
 	/**
 	 * 授权用户信息
@@ -115,7 +135,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 		private String loginName; // 登录名
 		private String name; // 姓名
 		
-		public Principal(User user) {
+		public Principal(Record user) {
 			this.id = user.getInt("id");
 			this.loginName = user.getStr("login_name");
 			this.name = user.getStr("name");

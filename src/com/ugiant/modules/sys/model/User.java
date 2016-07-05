@@ -1,11 +1,8 @@
 package com.ugiant.modules.sys.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.model.BaseModel;
 import com.ugiant.common.utils.PageUtils;
 
@@ -20,34 +17,6 @@ public class User extends BaseModel<User> {
 	
 	public static final User dao = new User();
 	
-	private List<Role> roleList;
-	
-	private String roleNames;
-	
-	public void setRoleNames(String roleNames) {
-		this.roleNames = roleNames;
-	}
-
-	/**
-	 * 用户拥有的角色名称字符串, 多个角色名称用','分隔.
-	 */
-	public String getRoleNames() {
-		return roleNames;
-	}
-	
-	public List<Role> getRoleList() {
-		return roleList;
-	}
-
-	public void setRoleList(List<Role> roleList) {
-		List<String> roleNameList = new ArrayList<String>(roleList.size());
-		for (Role role : roleList) {
-			roleNameList.add(role.getStr("name"));
-		}
-		roleNames = StringUtils.join(roleNameList, ",");
-		this.roleList = roleList;
-	}
-
 	private static String userColumns;
 	
 	private static String userJoins;
@@ -84,13 +53,13 @@ public class User extends BaseModel<User> {
 	 * @param user 用户对象
 	 * @return
 	 */
-	public Page<User> findPageByUser(int pageNo, int pageSize, User user) {
+	public Page<Record> findPageByUser(int pageNo, int pageSize, User user) {
 		StringBuilder select = new StringBuilder();
 		select.append("select").append(userColumns);
 		StringBuilder sqlExceptSelect = new StringBuilder();
 		sqlExceptSelect.append(" from sys_user a").append(userJoins);
 		// TODO
-		return PageUtils.getPage(dao, pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
+		return PageUtils.getPage(pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
 	}
 
 	/**
@@ -98,12 +67,16 @@ public class User extends BaseModel<User> {
 	 * @param loginName 登录名
 	 * @return
 	 */
-	public User getByLoginName(String loginName) {
+	public Record getByLoginName(String loginName) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(userColumns);
 		sql.append(" from sys_user a").append(userJoins);
 		sql.append(" where a.login_name = ?");
-		return dao.findFirst(sql.toString(), loginName);
+		return Db.findFirst(sql.toString(), loginName);
+	}
+	
+	public Record findById(Integer id) {
+		return Db.findById("sys_user", id);
 	}
 	
 }

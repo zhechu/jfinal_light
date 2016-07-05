@@ -33,7 +33,7 @@ public class DictService extends BaseService {
 	 * @param dict 字典对象
 	 * @return
 	 */
-	public Page<Dict> findPageByDict(int pageNo, int pageSize, Dict dict) {
+	public Page<Record> findPageByDict(int pageNo, int pageSize, Dict dict) {
 		return dictDao.findPageByDict(pageNo, pageSize, dict);
 	}
 	

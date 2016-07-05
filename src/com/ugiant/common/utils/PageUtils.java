@@ -1,7 +1,8 @@
 package com.ugiant.common.utils;
 
-import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 /**
  * 分页工具类
@@ -61,10 +62,9 @@ public class PageUtils {
 	 * @param sqlExceptSelect
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <M extends Model> Page<M> getPage(M model, int pageNo, int pageSize, String select, String sqlExceptSelect) {
-		com.jfinal.plugin.activerecord.Page<M> page = model.paginate(pageNo, pageSize, select, sqlExceptSelect);
-		return new com.ugiant.common.model.Page<M>(page.getList(), page.getPageNumber(), page.getPageSize(), page.getTotalPage(), page.getTotalRow());
+	public static Page<Record> getPage(int pageNo, int pageSize, String select, String sqlExceptSelect) {
+		com.jfinal.plugin.activerecord.Page<Record> page = Db.paginate(pageNo, pageSize, select, sqlExceptSelect);
+		return new com.ugiant.common.model.Page<Record>(page.getList(), page.getPageNumber(), page.getPageSize(), page.getTotalPage(), page.getTotalRow());
 	}
 	
 }

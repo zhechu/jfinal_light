@@ -2,6 +2,8 @@ package com.ugiant.modules.sys.model;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.model.BaseModel;
 
 /**
@@ -19,12 +21,12 @@ public class Area extends BaseModel<Area> {
 	 * 获取所有区域列表
 	 * @return
 	 */
-	public List<Area> findAll() {
+	public List<Record> findAll() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select a.*");
 		sql.append(" from sys_area a");
 		sql.append(" order by a.sort, a.update_date desc");
-		return dao.find(sql.toString());
+		return Db.find(sql.toString());
 	}
 
 }

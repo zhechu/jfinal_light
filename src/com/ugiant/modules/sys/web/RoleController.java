@@ -2,8 +2,8 @@ package com.ugiant.modules.sys.web;
 
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.web.BaseController;
-import com.ugiant.modules.sys.model.Role;
 import com.ugiant.modules.sys.service.SystemService;
 
 /**
@@ -20,7 +20,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 */
 	public void index() {
-		List<Role> list = systemService.findAllRole();
+		List<Record> list = systemService.findAllRole();
 		this.setAttr("list", list);
 		this.render("roleList.jsp");
 	}

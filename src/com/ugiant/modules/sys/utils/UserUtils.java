@@ -2,12 +2,15 @@ package com.ugiant.modules.sys.utils;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
+import com.google.common.collect.Lists;
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.modules.sys.model.Menu;
 import com.ugiant.modules.sys.model.Role;
 import com.ugiant.modules.sys.model.User;
@@ -33,12 +36,17 @@ public class UserUtils {
 	 * @param id
 	 * @return 取不到返回null
 	 */
-	public static User get(Integer id){
-		User user = userDao.findById(id);
+	public static Record get(Integer id){
+		Record user = userDao.findById(id);
 		if (user == null){
 			return null;
 		}
-		user.setRoleList(roleDao.findByUserId(id));
+		List<String> roleNames = Lists.newArrayList();
+		List<Record> roleList = roleDao.findByUserId(id);
+		for (Record role : roleList) {
+			roleNames.add(role.getStr("name"));
+		}
+		user.set("role_names", StringUtils.join(roleNames, ","));
 		return user;
 	}
 	
@@ -46,8 +54,8 @@ public class UserUtils {
 	 * 菜单列表
 	 * @return
 	 */
-	public static List<Menu> getMenuList(){
-		List<Menu> menuList = menuDao.findAll();
+	public static List<Record> getMenuList(){
+		List<Record> menuList = menuDao.findAll();
 		return menuList;
 	}
 
@@ -81,12 +89,12 @@ public class UserUtils {
 	 * @param loginName
 	 * @return 取不到返回null
 	 */
-	public static User getByLoginName(String loginName){
-		User user = userDao.getByLoginName(loginName);
+	public static Record getByLoginName(String loginName){
+		Record user = userDao.getByLoginName(loginName);
 		if (user == null){
 			return null;
 		}
-		user.setRoleList(roleDao.findByLoginName(loginName));
+		//user.setRoleList(roleDao.findByLoginName(loginName));
 		return user;
 	}
 
@@ -112,17 +120,17 @@ public class UserUtils {
 	 * 获取当前用户
 	 * @return 取不到返回 new User()
 	 */
-	public static User getUser(){
+	public static Record getUser(){
 		Principal principal = getPrincipal();
 		if (principal!=null){
-			User user = get(principal.getId());
+			Record user = get(principal.getId());
 			if (user != null){
 				return user;
 			}
-			return new User();
+			return new Record();
 		}
 		// 如果没有登录，则返回实例化空的User对象。
-		return new User();
+		return new Record();
 	}
 
 }

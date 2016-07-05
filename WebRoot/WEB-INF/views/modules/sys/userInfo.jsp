@@ -21,6 +21,7 @@
 					}
 				}
 			});
+			console.log("${user}");
 		});
 	</script>
 </head>
@@ -89,7 +90,7 @@
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">
-				<label class="lbl">${user.roleNames}</label>
+				<label class="lbl">${user.role_names}</label>
 			</div>
 		</div>
 		<div class="control-group">

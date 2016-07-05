@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.service.BaseService;
 import com.ugiant.modules.sys.model.Menu;
 import com.ugiant.modules.sys.model.Role;
@@ -36,7 +37,7 @@ public class SystemService extends BaseService {
 	 * @param user 用户对象
 	 * @return
 	 */
-	public Page<User> findPageByUser(int pageNo, int pageSize, User user) {
+	public Page<Record> findPageByUser(int pageNo, int pageSize, User user) {
 		return userDao.findPageByUser(pageNo, pageSize, user);
 	}
 	
@@ -44,7 +45,7 @@ public class SystemService extends BaseService {
 	 * 获取所有菜单
 	 * @return
 	 */
-	public List<Menu> findAllMenu() {
+	public List<Record> findAllMenu() {
 		return menuDao.findAll();
 	}
 	
@@ -52,7 +53,7 @@ public class SystemService extends BaseService {
 	 * 获取所有角色列表
 	 * @return
 	 */
-	public List<Role> findAllRole() {
+	public List<Record> findAllRole() {
 		return roleDao.findAll();
 	}
 
@@ -61,7 +62,7 @@ public class SystemService extends BaseService {
 	 * @param loginName
 	 * @return
 	 */
-	public User getUserByLoginName(String loginName) {
+	public Record getUserByLoginName(String loginName) {
 		return UserUtils.getByLoginName(loginName);
 	}
 	
