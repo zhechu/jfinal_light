@@ -75,8 +75,25 @@ public class User extends BaseModel<User> {
 		return Db.findFirst(sql.toString(), loginName);
 	}
 	
+	/**
+	 * 根据用户编号获取用户
+	 * @param id
+	 * @return
+	 */
 	public Record findById(Integer id) {
-		return Db.findById("sys_user", id);
+		StringBuilder sql = new StringBuilder();
+		sql.append("select").append(userColumns);
+		sql.append(" from sys_user a").append(userJoins);
+		sql.append(" where a.id = ?");
+		return Db.findFirst(sql.toString(), id);
+	}
+	
+	/**
+	 * 更新用户信息
+	 * @param user
+	 */
+	public boolean update(Record user) {
+		return Db.update("sys_user", user);
 	}
 	
 }

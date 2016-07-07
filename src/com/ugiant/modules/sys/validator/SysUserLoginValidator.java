@@ -1,10 +1,6 @@
 package com.ugiant.modules.sys.validator;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import com.jfinal.core.Controller;
-import com.jfinal.kit.PropKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.render.CaptchaRender;
 import com.ugiant.common.validator.BaseValidator;
@@ -17,6 +13,9 @@ public class SysUserLoginValidator extends BaseValidator {
 
 	@Override
 	protected void validate(Controller c) {
+		this.validateToken("loginToken", "message", "您已经登录，请不要重复登录");
+		this.validateRequired("username", "message", "请填写用户名.");
+		this.validateRequired("password", "message", "请填写密码.");
 		String validateCode = c.getPara("validateCode");
 		if (StrKit.notBlank(validateCode)) {
 			if (!CaptchaRender.validate(c, validateCode)) {
@@ -25,19 +24,11 @@ public class SysUserLoginValidator extends BaseValidator {
 		} else {
 			this.addError("message", "请填写验证码.");
 		}
-		this.validateRequired("password", "message", "请填写密码.");
-		this.validateRequired("username", "message", "请填写用户名.");
 	}
 
 	@Override
 	protected void handleError(Controller c) {
-		String message = c.getAttr("message");
-		try {
-			message = URLEncoder.encode(message, PropKit.get("encoding"));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		c.redirect(adminPath+"/login?message="+message);
+		c.forwardAction(adminPath+"/login");
 	}
 
 }

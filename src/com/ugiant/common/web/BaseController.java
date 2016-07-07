@@ -1,5 +1,7 @@
 package com.ugiant.common.web;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jfinal.core.Controller;
 import com.jfinal.kit.PropKit;
 
@@ -19,5 +21,15 @@ public abstract class BaseController extends Controller {
 	 * 管理首页
 	 */
 	protected String adminIndexPath = PropKit.get("adminIndexPath");
+	
+	/**
+	 * 回显提示信息
+	 */
+	protected void setAttrMessage() {
+		String message = this.getPara("message");
+		if (StringUtils.isNotBlank(message)) {
+			this.setAttr("message", message);
+		}
+	}
 	
 }

@@ -1,6 +1,5 @@
 package com.ugiant.modules.sys.web;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresUser;
 
 import com.jfinal.aop.Before;
@@ -12,6 +11,7 @@ import com.ugiant.common.web.BaseController;
 import com.ugiant.modules.sys.model.User;
 import com.ugiant.modules.sys.service.SystemService;
 import com.ugiant.modules.sys.utils.UserUtils;
+import com.ugiant.modules.sys.validator.SysUserInfoValidator;
 
 /**
  * 用户 控制器
@@ -57,20 +57,28 @@ public class UserController extends BaseController {
 	 * 用户个人信息页
 	 * @return
 	 */
-	@Before({Tx.class})
+	@Before({SysUserInfoValidator.class, Tx.class})
 	public void info() {
-		User user = this.getModel(User.class);
 		Record currentUser = UserUtils.getUser();
-		if (user!=null && StringUtils.isNotBlank(user.getStr("name"))){
-			currentUser.set("email", user.getStr("email"));
-			currentUser.set("phone", user.getStr("phone"));
-			currentUser.set("mobile", user.getStr("mobile"));
-			currentUser.set("remarks", user.getStr("remarks"));
-			currentUser.set("photo", user.getStr("photo"));
-			//currentUser.update();
-			this.setAttr("message", "保存用户信息成功");
+		Boolean is_save = this.getParaToBoolean("is_save");
+		if (is_save!=null && is_save) { // 提交表单时，再保存
+			Record user = new Record();
+			user.set("id", currentUser.getInt("id"));
+			user.set("email", this.getPara("email"));
+			user.set("phone", this.getPara("phone"));
+			user.set("mobile", this.getPara("mobile"));
+			user.set("remarks", this.getPara("remarks"));
+			boolean flag = systemService.updateUser(user);
+			if (flag) {
+				currentUser = UserUtils.getUser(); // 刷新
+				this.setAttr("message", "保存用户信息成功");
+			} else {
+				this.setAttr("message", "保存用户信息失败");
+			}
 		}
 		this.setAttr("user", currentUser);
+		this.setAttrMessage();
+		this.createToken("userInfoToken"); // token
 		this.render("userInfo.jsp");
 	}
 	

@@ -19,7 +19,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#loginForm").validate({
-				rules: {
+				/* rules: {
 					username: {required: true},
 					password: {required: true},
 					validateCode: {required: true}
@@ -28,7 +28,7 @@
 					username: {required: "请填写用户名."},
 					password: {required: "请填写密码."},
 					validateCode: {required: "请填写验证码."}
-				},
+				}, */
 				errorLabelContainer: "#messageBox",
 				errorPlacement: function(error, element) {
 					error.appendTo($("#loginError").parent());
@@ -55,6 +55,7 @@
 	</div>
 	<h1 class="form-signin-heading">light 快速开发平台</h1>
 	<form id="loginForm" class="form-signin" action="${ctx}/doLogin" method="post">
+		<input type="hidden" name="loginToken" value="${loginToken}" />
 		<label class="input-label" for="username">登录名</label>
 		<input type="text" id="username" name="username" class="input-block-level" value="${username}">
 		<label class="input-label" for="password">密码</label>

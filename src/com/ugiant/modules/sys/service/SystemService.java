@@ -77,4 +77,12 @@ public class SystemService extends BaseService {
 		user.update();
 	}
 	
+	/**
+	 * 更新用户信息
+	 * @param user
+	 */
+	public boolean updateUser(Record user) {
+		return userDao.update(user);
+	}
+	
 }

@@ -7,6 +7,13 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#inputForm").validate({
+				rules: {
+					"name" : {required:true, maxlength:50},
+					"email" : {maxlength:50, email:true},
+					"phone" : {maxlength:50, telephone:true},
+					"mobile" : {maxlength:50, mobilephone:true},
+					"remarks" : {maxlength:200}
+				},
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
 					form.submit();
@@ -21,7 +28,6 @@
 					}
 				}
 			});
-			console.log("${user}");
 		});
 	</script>
 </head>
@@ -32,6 +38,8 @@
 	</ul><br/>
 	<form id="inputForm" action="${ctx}/sys/user/info" method="post" class="form-horizontal">
 		<sys:message content="${message}"/>
+		<input type="hidden" id="is_save" name="is_save" value="true"/>
+		<input type="hidden" name="userInfoToken" value="${userInfoToken}" />
 		<div class="control-group">
 			<label class="control-label">头像:</label>
 			<div class="controls">
@@ -54,31 +62,31 @@
 		<div class="control-group">
 			<label class="control-label">姓名:</label>
 			<div class="controls">
-				<input type="text" name="user.name" value="${user.name }" maxlength="50" class="required" readonly="true"/>
+				<input type="text" name="name" value="${user.name }" readonly="true"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">邮箱:</label>
 			<div class="controls">
-				<input type="text" name="user.email" value="${user.email }" maxlength="50" class="email"/>
+				<input type="email" name="email" value="${user.email }"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">电话:</label>
 			<div class="controls">
-				<input type="text" name="user.phone" value="${user.phone }" maxlength="50"/>
+				<input type="tel" name="phone" value="${user.phone }"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">手机:</label>
 			<div class="controls">
-				<input type="text" name="user.mobile" value="${user.mobile }" maxlength="50"/>
+				<input type="tel" name="mobile" value="${user.mobile }"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">备注:</label>
 			<div class="controls">
-				<textarea name="user.remarks" rows="3" maxlength="200" class="input-xlarge">${user.remarks }</textarea>
+				<textarea name="remarks" rows="3" class="input-xlarge">${user.remarks }</textarea>
 			</div>
 		</div>
 		<div class="control-group">

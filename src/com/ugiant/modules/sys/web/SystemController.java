@@ -57,6 +57,8 @@ public class SystemController extends BaseController {
 		if (StringUtils.isNotBlank(message)) {
 			this.setAttr("message", message);
 		}
+		this.setAttrMessage(); // 回显提示信息
+		this.createToken("loginToken"); // token
 		this.render("sysLogin.jsp");
 	}
 	

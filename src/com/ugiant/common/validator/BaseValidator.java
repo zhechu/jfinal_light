@@ -12,11 +12,40 @@ import com.jfinal.validate.Validator;
  *
  */
 public abstract class BaseValidator extends Validator {
+	
+	protected static final String mobilephonePattern = "^(((13[0-9]{1})|(15[0-9]{1}))+\\d{8})$"; // 手机
+	
+	protected static final String telephonePattern = "^(0[0-9]{2,3}\\-)?([2-9][0-9]{6,7})+(\\-[0-9]{1,4})?$"; // 电话
+	
+	public BaseValidator() {
+		super();
+		this.setShortCircuit(true); // 短路
+	}
 
 	/**
 	 * 管理基础路径
 	 */
 	protected String adminPath = PropKit.get("adminPath");
+
+	/**
+	 * 验证手机号
+	 * @param field
+	 * @param errorKey
+	 * @param errorMessage
+	 */
+	protected void validateMobilephone(String field, String errorKey, String errorMessage) {
+		validateRegex(field, mobilephonePattern, false, errorKey, errorMessage);
+	}
+	
+	/**
+	 * 验证电话号码
+	 * @param field
+	 * @param errorKey
+	 * @param errorMessage
+	 */
+	protected void validateTelephone(String field, String errorKey, String errorMessage){
+		validateRegex(field, telephonePattern, false, errorKey, errorMessage);
+	}
 	
 	/**
 	 * 验证字符串
