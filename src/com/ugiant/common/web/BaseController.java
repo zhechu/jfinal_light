@@ -30,6 +30,10 @@ public abstract class BaseController extends Controller {
 		if (StringUtils.isNotBlank(message)) {
 			this.setAttr("message", message);
 		}
+		String type = this.getPara("type");
+		if (StringUtils.isNotBlank(type)) {
+			this.setAttr("type", type);
+		}
 	}
 	
 }

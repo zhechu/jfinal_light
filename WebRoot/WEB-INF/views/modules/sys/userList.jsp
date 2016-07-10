@@ -31,11 +31,11 @@
 </head>
 <body>
 	<div id="importBox" class="hide">
-		<form id="importForm" action="${ctx}/sys/user/import" method="post" enctype="multipart/form-data"
+		<form id="importForm" action="${ctx}/sys/user/importExcel" method="post" enctype="multipart/form-data"
 			class="form-search" style="padding-left:20px;text-align:center;" onsubmit="loading('正在导入，请稍等...');"><br/>
 			<input id="uploadFile" name="file" type="file" style="width:330px"/><br/><br/>　　
 			<input id="btnImportSubmit" class="btn btn-primary" type="submit" value="   导    入   "/>
-			<a href="${ctx}/sys/user/import/template">下载模板</a>
+			<a href="${ctx}/sys/user/importTemplate">下载模板</a>
 		</form>
 	</div>
 	<ul class="nav nav-tabs">
@@ -45,26 +45,33 @@
 	<form id="searchForm" action="${ctx}/sys/user/list" method="post" class="breadcrumb form-search ">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
-		<%-- <sys:tableSort id="orderBy" name="orderBy" value="${page.orderBy}" callback="page();"/> --%>
 		<ul class="ul-form">
 			<li>
 				<label>归属公司：</label>
-				<sys:treeselect id="company" name="company.id" value="${user.company_id}" labelName="company.name" labelValue="${user.company_name}" 
+				<sys:treeselect id="company" name="company_id" value="${user.company_id}" labelName="company_name" labelValue="${user.company_name}" 
 					title="公司" url="/sys/office/treeData?type=1" cssClass="input-small" allowClear="true"/>
 			</li>
 			<li>
 				<label>登录名：</label>
-				<input type="text" name="loginName" maxlength="50" class="input-medium"/>
+				<input type="text" name="login_name" value="${user.login_name }" maxlength="50" class="input-medium"/>
+			</li>
+			<li>
+				<label>允许登录：</label>
+				<sys:select name="login_flag" items="${fns:getDictList('yes_no')}" cssClass="input-medium" defaultSelected="${user.login_flag }" itemLabel="label" itemValue="value"/>
 			</li>
 			<li class="clearfix"></li>
 			<li>
 				<label>归属部门：</label>
-				<sys:treeselect id="office" name="office.id" value="${user.office_id}" labelName="office.name" labelValue="${user.office_name}" 
+				<sys:treeselect id="office" name="office_id" value="${user.office_id}" labelName="office_name" labelValue="${user.office_name}" 
 					title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>
 			</li>
 			<li>
 				<label>姓&nbsp;&nbsp;&nbsp;名：</label>
-				<input type="text" name="name" maxlength="50" class="input-medium"/>
+				<input type="text" name="name" value="${user.name }" maxlength="50" class="input-medium"/>
+			</li>
+			<li>
+				<label>角色：</label>
+				<sys:select name="role_id" items="${fns:getAllRole()}"defaultSelected="${user.role_id }" cssClass="input-medium" itemLabel="name" itemValue="id"/>
 			</li>
 			<li class="btns">
 				<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询" onclick="return page();"/>
@@ -80,11 +87,12 @@
 			<tr>
 				<th>归属公司</th>
 				<th>归属部门</th>
-				<th class="sort-column login_name">登录名</th>
-				<th class="sort-column name">姓名</th>
+				<th>登录名</th>
+				<th>姓名</th>
 				<th>电话</th>
 				<th>手机</th>
-				<%--<th>角色</th> --%>
+				<th>否是允许登录</th>
+				<th>角色</th>
 				<shiro:hasPermission name="sys:user:edit">
 					<th>操作</th>
 				</shiro:hasPermission>
@@ -98,8 +106,9 @@
 					<td><a href="${ctx}/sys/user/form?id=${user.id}">${user.login_name}</a></td>
 					<td>${user.name}</td>
 					<td>${user.phone}</td>
-					<td>${user.mobile}</td><%--
-					<td>${user.roleNames}</td> --%>
+					<td>${user.mobile}</td>
+					<td>${fns:getDictLabel(user.login_flag, 'yes_no', '无')}</td>
+					<td>${user.role_names}</td>
 					<shiro:hasPermission name="sys:user:edit"><td>
 	    				<a href="${ctx}/sys/user/form?id=${user.id}">修改</a>
 						<a href="${ctx}/sys/user/delete?id=${user.id}" onclick="return confirmx('确认要删除该用户吗？', this.href)">删除</a>

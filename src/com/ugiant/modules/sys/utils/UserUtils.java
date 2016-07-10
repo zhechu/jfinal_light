@@ -36,7 +36,7 @@ public class UserUtils {
 	 * @param id
 	 * @return 取不到返回null
 	 */
-	public static Record get(Integer id){
+	public static Record get(Long id){
 		Record user = userDao.findById(id);
 		if (user == null){
 			return null;
@@ -94,7 +94,8 @@ public class UserUtils {
 		if (user == null){
 			return null;
 		}
-		//user.setRoleList(roleDao.findByLoginName(loginName));
+		List<Record> roleList = roleDao.findByUserId(user.getLong("id"));
+		user.set("role_list", roleList);
 		return user;
 	}
 
@@ -133,4 +134,12 @@ public class UserUtils {
 		return new Record();
 	}
 
+	/**
+	 * 获取所有角色
+	 * @return
+	 */
+	public static List<Record> getAllRole() {
+		return roleDao.findAll();
+	}
+	
 }

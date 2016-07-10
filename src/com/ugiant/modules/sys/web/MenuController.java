@@ -22,7 +22,7 @@ public class MenuController extends BaseController {
 	 * @return
 	 */
 	public void tree() {
-		this.setAttr("parentId", this.getParaToInt("parentId"));
+		this.setAttr("parentId", this.getParaToLong("parentId"));
 		this.render("menuTree.jsp");
 	}
 

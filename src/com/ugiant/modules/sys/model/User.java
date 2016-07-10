@@ -1,5 +1,10 @@
 package com.ugiant.modules.sys.model;
 
+import java.util.Date;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -43,6 +48,7 @@ public class User extends BaseModel<User> {
 		userJoinsSb.append(" left join sys_user cu2 on cu2.id = c.deputy_person");
 		userJoinsSb.append(" left join sys_user ou on ou.id = o.primary_person");
 		userJoinsSb.append(" left join sys_user ou2 on ou2.id = o.deputy_person");
+		userJoinsSb.append(" left join sys_user_role ur on ur.user_id = a.id");
 		userJoins = userJoinsSb.toString();
 	}
 
@@ -53,15 +59,101 @@ public class User extends BaseModel<User> {
 	 * @param user 用户对象
 	 * @return
 	 */
-	public Page<Record> findPageByUser(int pageNo, int pageSize, User user) {
+	public Page<Record> findPageByUser(int pageNo, int pageSize, Record user) {
 		StringBuilder select = new StringBuilder();
 		select.append("select").append(userColumns);
 		StringBuilder sqlExceptSelect = new StringBuilder();
 		sqlExceptSelect.append(" from sys_user a").append(userJoins);
-		// TODO
-		return PageUtils.getPage(pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
+		sqlExceptSelect.append(" where 1 = 1");
+		List<Object> paras = Lists.newArrayList(); // 存储参数
+		Long companyId = user.getLong("company_id");
+		if (companyId != null) {
+			sqlExceptSelect.append(" and (a.company_id = ? or c.parent_ids like ?)");
+			paras.add(companyId);
+			paras.add("%," + companyId + ",%");
+		}
+		Long officeId = user.getLong("office_id");
+		if (officeId != null) {
+			sqlExceptSelect.append(" and (a.office_id = ? or o.parent_ids like ?)");
+			paras.add(officeId);
+			paras.add("%," + officeId + ",%");
+		}
+		String loginName = user.getStr("login_name");
+		if (StrKit.notBlank(loginName)) {
+			loginName = "%"+loginName.trim()+"%";
+			sqlExceptSelect.append(" and a.login_name like ?");
+			paras.add(loginName);
+		}
+		String name = user.getStr("name");
+		if (StrKit.notBlank(name)) {
+			name = "%"+name.trim()+"%";
+			sqlExceptSelect.append(" and a.name like ?");
+			paras.add(name);
+		}
+		String loginFlag = user.getStr("login_flag");
+		if (StrKit.notBlank(loginFlag)) {
+			sqlExceptSelect.append(" and a.login_flag = ?");
+			paras.add(loginFlag);
+		}
+		Long roleId = user.getLong("role_id");
+		if (roleId != null) {
+			sqlExceptSelect.append(" and ur.role_id = ?");
+			paras.add(roleId);
+		}
+		sqlExceptSelect.append(" order by a.create_date desc");
+		return PageUtils.getPage(pageNo, pageSize, select.toString(), sqlExceptSelect.toString(), paras.toArray());
 	}
 
+	/**
+	 * 查询
+	 * @param user
+	 * @return
+	 */
+	public List<Record> find(Record user) {
+		StringBuilder select = new StringBuilder();
+		select.append("select").append(userColumns);
+		StringBuilder sqlExceptSelect = new StringBuilder();
+		sqlExceptSelect.append(" from sys_user a").append(userJoins);
+		sqlExceptSelect.append(" where 1 = 1");
+		List<Object> paras = Lists.newArrayList(); // 存储参数
+		Long companyId = user.getLong("company_id");
+		if (companyId != null) {
+			sqlExceptSelect.append(" and (a.company_id = ? or c.parent_ids like ?)");
+			paras.add(companyId);
+			paras.add("%," + companyId + ",%");
+		}
+		Long officeId = user.getLong("office_id");
+		if (officeId != null) {
+			sqlExceptSelect.append(" and (a.office_id = ? or o.parent_ids like ?)");
+			paras.add(officeId);
+			paras.add("%," + officeId + ",%");
+		}
+		String loginName = user.getStr("login_name");
+		if (StrKit.notBlank(loginName)) {
+			loginName = "%"+loginName.trim()+"%";
+			sqlExceptSelect.append(" and a.login_name like ?");
+			paras.add(loginName);
+		}
+		String name = user.getStr("name");
+		if (StrKit.notBlank(name)) {
+			name = "%"+name.trim()+"%";
+			sqlExceptSelect.append(" and a.name like ?");
+			paras.add(name);
+		}
+		String loginFlag = user.getStr("login_flag");
+		if (StrKit.notBlank(loginFlag)) {
+			sqlExceptSelect.append(" and a.login_flag = ?");
+			paras.add(loginFlag);
+		}
+		Long roleId = user.getLong("role_id");
+		if (roleId != null) {
+			sqlExceptSelect.append(" and ur.role_id = ?");
+			paras.add(roleId);
+		}
+		sqlExceptSelect.append(" order by a.create_date desc");
+		return Db.find(select.append(sqlExceptSelect).toString(), paras.toArray());
+	}
+	
 	/**
 	 * 根据登录名获取用户
 	 * @param loginName 登录名
@@ -80,7 +172,7 @@ public class User extends BaseModel<User> {
 	 * @param id
 	 * @return
 	 */
-	public Record findById(Integer id) {
+	public Record findById(Long id) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(userColumns);
 		sql.append(" from sys_user a").append(userJoins);
@@ -93,7 +185,26 @@ public class User extends BaseModel<User> {
 	 * @param user
 	 */
 	public boolean update(Record user) {
+		user.set("update_date", new Date());
 		return Db.update("sys_user", user);
+	}
+	
+	/**
+	 * 添加用户
+	 * @param user
+	 * @return
+	 */
+	public boolean save(Record user) {
+		return Db.save("sys_user", user);
+	}
+	
+	/**
+	 * 删除用户
+	 * @param user
+	 * @return
+	 */
+	public boolean delete(Record user) {
+		return Db.delete("sys_user", user);
 	}
 	
 }

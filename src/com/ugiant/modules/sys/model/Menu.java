@@ -34,8 +34,8 @@ public class Menu extends BaseModel<Menu> {
 	 * 获取根菜单
 	 * @return
 	 */
-	public static Integer getRootId(){
-		return 1;
+	public static Long getRootId(){
+		return 1L;
 	}
 	
 	/**
@@ -45,23 +45,23 @@ public class Menu extends BaseModel<Menu> {
 	 * @param parentId 父id
 	 * @param cascade 是否级联
 	 */
-	public static void sortList(List<Record> list, List<Record> sourcelist, Integer parentId, boolean cascade){
+	public static void sortList(List<Record> list, List<Record> sourcelist, Long parentId, boolean cascade){
 		Record e = null; // 当前菜单
-		Integer parent_id = null; // 当前菜单父id
+		Long parent_id = null; // 当前菜单父id
 		Record child = null; // 当前菜单子菜单
-		Integer child_parent_id = null; // 当前菜单子菜单父id
-		Integer id = null; // 当前菜单id
+		Long child_parent_id = null; // 当前菜单子菜单父id
+		Long id = null; // 当前菜单id
 		for (int i=0; i<sourcelist.size(); i++){
 			e = sourcelist.get(i);
-			parent_id = e.getInt("parent_id");
+			parent_id = e.getLong("parent_id");
 			if (parent_id!=null && parent_id.equals(parentId)){
 				list.add(e);
 				if (cascade){
 					// 判断是否还有子节点, 有则继续获取子节点
 					for (int j=0; j<sourcelist.size(); j++){
 						child = sourcelist.get(j);
-						child_parent_id = child.getInt("parent_id");
-						id = e.getInt("id");
+						child_parent_id = child.getLong("parent_id");
+						id = e.getLong("id");
 						if (child_parent_id!=null && child_parent_id.equals(id)){
 							sortList(list, sourcelist, id, true);
 							break;

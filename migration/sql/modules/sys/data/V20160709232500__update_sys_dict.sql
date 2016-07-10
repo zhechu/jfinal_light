@@ -1,0 +1,1 @@
+update sys_dict set value = '2' where `type` = 'yes_no' and value = '0';

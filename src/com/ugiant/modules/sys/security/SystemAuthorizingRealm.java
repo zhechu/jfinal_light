@@ -44,7 +44,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
      * 认证回调函数,登录时调用.
      */
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) {
-        UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+    	AuthenticationInfo info = null;
+    	UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		// 校验用户名密码
         Record user = systemService.getUserByLoginName(token.getUsername());
 		if (user != null) {
@@ -52,19 +53,22 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 				throw new AuthenticationException("msg:该已帐号禁止登录.");
 			}
 			byte[] salt = Encodes.decodeHex(user.getStr("password").substring(0,16));
-			return new SimpleAuthenticationInfo(
+			info = new SimpleAuthenticationInfo(
 					new Principal(user),
 					user.getStr("password").substring(16),
 					ByteSource.Util.bytes(salt),
 					getName());
+			// 更新登录IP和时间
+			systemService.updateUserLoginInfo(user);
 		}
-		return null;
+		return info;
     }
  
     /**
      * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
      */
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+    @SuppressWarnings("unchecked")
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     	Principal principal = (Principal) principals.fromRealm(getName()).iterator().next();
     	String loginName = principal.getLoginName();
     	Record user = systemService.getUserByLoginName(loginName);
@@ -81,14 +85,12 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 				}
 			}
 			// 添加用户权限
-			info.addStringPermission("user");
+			//info.addStringPermission("user");
 			// 添加用户角色信息
-			/*List<Role> roleList = user.getRoleList();
-			for (Role role : roleList){
+			List<Record> roleList = (List<Record>) user.get("role_list");
+			for (Record role : roleList){
 				info.addRole(role.getStr("enname"));
-			}*/
-			// 更新登录IP和时间
-			//systemService.updateUserLoginInfo(user);
+			}
 			return info;
 		} else {
 			return null;
@@ -131,21 +133,21 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 
 		private static final long serialVersionUID = 6758028047686680870L;
 		
-		private Integer id; // 编号
+		private Long id; // 编号
 		private String loginName; // 登录名
 		private String name; // 姓名
 		
 		public Principal(Record user) {
-			this.id = user.getInt("id");
+			this.id = user.getLong("id");
 			this.loginName = user.getStr("login_name");
 			this.name = user.getStr("name");
 		}
 
-		public Integer getId() {
+		public Long getId() {
 			return id;
 		}
 
-		public void setId(Integer id) {
+		public void setId(Long id) {
 			this.id = id;
 		}
 

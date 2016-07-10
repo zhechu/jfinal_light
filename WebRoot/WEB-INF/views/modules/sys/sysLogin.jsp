@@ -19,7 +19,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#loginForm").validate({
-				/* rules: {
+				rules: {
 					username: {required: true},
 					password: {required: true},
 					validateCode: {required: true}
@@ -28,7 +28,7 @@
 					username: {required: "请填写用户名."},
 					password: {required: "请填写密码."},
 					validateCode: {required: "请填写验证码."}
-				}, */
+				},
 				errorLabelContainer: "#messageBox",
 				errorPlacement: function(error, element) {
 					error.appendTo($("#loginError").parent());

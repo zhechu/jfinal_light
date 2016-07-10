@@ -8,6 +8,7 @@ import com.ugiant.modules.sys.web.MenuController;
 import com.ugiant.modules.sys.web.OfficeController;
 import com.ugiant.modules.sys.web.RoleController;
 import com.ugiant.modules.sys.web.SystemController;
+import com.ugiant.modules.sys.web.TagController;
 import com.ugiant.modules.sys.web.UserController;
 
 /**
@@ -37,6 +38,8 @@ public class SystemRoute extends BaseRoutes {
 		this.add(adminPath+"/sys/role", RoleController.class, SYS_PATH); // 角色
 		
 		this.add(adminPath+"/sys/dict", DictController.class, SYS_PATH); // 字典
+		
+		this.add(adminPath+"/tag", TagController.class, SYS_PATH); // 标签
 		
 	}
 }

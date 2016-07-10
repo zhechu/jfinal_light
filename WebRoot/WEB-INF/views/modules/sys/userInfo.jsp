@@ -9,9 +9,9 @@
 			$("#inputForm").validate({
 				rules: {
 					"name" : {required:true, maxlength:50},
-					"email" : {maxlength:50, email:true},
+					"email" : {required:true, maxlength:50, email:true},
 					"phone" : {maxlength:50, telephone:true},
-					"mobile" : {maxlength:50, mobilephone:true},
+					"mobile" : {required:true, maxlength:50, mobilephone:true},
 					"remarks" : {maxlength:200}
 				},
 				submitHandler: function(form){
@@ -89,12 +89,12 @@
 				<textarea name="remarks" rows="3" class="input-xlarge">${user.remarks }</textarea>
 			</div>
 		</div>
-		<div class="control-group">
+		<%-- <div class="control-group">
 			<label class="control-label">用户类型:</label>
 			<div class="controls">
 				<label class="lbl">${fns:getDictLabel(user.user_type, 'sys_user_type', '无')}</label>
 			</div>
-		</div>
+		</div> --%>
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">

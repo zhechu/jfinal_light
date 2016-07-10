@@ -22,11 +22,27 @@
 
 	<!-- UserUtils start -->
 	<function>
+		<description>获取当前用户对象</description>
+		<name>getUser</name>
+		<function-class>com.ugiant.modules.sys.utils.UserUtils</function-class>
+		<function-signature>com.jfinal.plugin.activerecord.Record getUser()</function-signature>
+		<example>${fns:getUser()}</example>
+	</function>
+
+	<function>
 		<description>获取当前用户的菜单对象列表</description>
 		<name>getMenuList</name>
 		<function-class>com.ugiant.modules.sys.utils.UserUtils</function-class>
 		<function-signature>java.util.List getMenuList()</function-signature>
 		<example>${fns:getMenuList()}</example>
+	</function>
+
+	<function>
+		<description>获取所有角色列表</description>
+		<name>getAllRole</name>
+		<function-class>com.ugiant.modules.sys.utils.UserUtils</function-class>
+		<function-signature>java.util.List getAllRole()</function-signature>
+		<example>${fns:getAllRole()}</example>
 	</function>
 	<!-- UserUtils end -->
 
@@ -36,7 +52,8 @@
 		<name>getDictLabel</name>
 		<function-class>com.ugiant.modules.sys.utils.DictUtils</function-class>
 		<function-signature>java.lang.String getDictLabel(java.lang.String,
-			java.lang.String, java.lang.String)</function-signature>
+			java.lang.String, java.lang.String)
+		</function-signature>
 		<example>${fns:getDictLabel(value, type, defaultValue)}</example>
 	</function>
 
@@ -45,8 +62,7 @@
 		<name>getDictLabels</name>
 		<function-class>com.ugiant.modules.sys.utils.DictUtils</function-class>
 		<function-signature>java.lang.String getDictLabels(java.lang.String,
-			java.lang.String, java.lang.String)
-		</function-signature>
+			java.lang.String, java.lang.String)</function-signature>
 		<example>${fns:getDictLabels(values, type, defaultValue)}</example>
 	</function>
 
@@ -55,8 +71,7 @@
 		<name>getDictValue</name>
 		<function-class>com.ugiant.modules.sys.utils.DictUtils</function-class>
 		<function-signature>java.lang.String getDictValue(java.lang.String,
-			java.lang.String, java.lang.String)
-		</function-signature>
+			java.lang.String, java.lang.String)</function-signature>
 		<example>${fns:getDictValue(label, type, defaultValue)}</example>
 	</function>
 

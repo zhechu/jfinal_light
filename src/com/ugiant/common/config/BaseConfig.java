@@ -1,6 +1,8 @@
 package com.ugiant.common.config;
 
 
+import com.jfinal.aop.Interceptor;
+import com.jfinal.aop.Invocation;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -12,6 +14,7 @@ import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
 import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.activerecord.CaseInsensitiveContainerFactory;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.ViewType;
 import com.ugiant.common.dict.Table;
@@ -56,6 +59,7 @@ public class BaseConfig extends JFinalConfig {
 		// 配置ActiveRecord插件
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
 		arp.setShowSql(true);
+		arp.setContainerFactory(new CaseInsensitiveContainerFactory(true)); // 大小写不敏感
 		me.add(arp);
 		
 		arp.addMapping(Table.SYS_MENU, Menu.class); // 菜单
@@ -75,6 +79,15 @@ public class BaseConfig extends JFinalConfig {
 	@Override
 	public void configInterceptor(Interceptors me) {
 		me.add(new ShiroInterceptor());
+		
+		me.add(new Interceptor() {
+			@Override
+			public void intercept(Invocation inv) {
+				inv.getController().setAttr("actionKey", inv.getActionKey()); // 传递 actionKey
+				// 执行正常逻辑
+				inv.invoke();
+			}
+		});
 	}
 	
 	@Override

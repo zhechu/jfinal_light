@@ -1,8 +1,11 @@
 package com.ugiant.common.validator;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.jfinal.core.Controller;
 import com.jfinal.kit.PropKit;
 import com.jfinal.validate.Validator;
 
@@ -64,6 +67,22 @@ public abstract class BaseValidator extends Validator {
         Matcher matcher = pattern.matcher(value);
         if (!matcher.matches())
         	addError(errorKey, errorMessage);
+	}
+	
+	/**
+	 * 返回带提示信息参数的需重定向的 url
+	 * @param c
+	 * @return
+	 */
+	protected String getRedirectUrl(Controller c) {
+		String message = c.getAttr("message");
+		try {
+			message = URLEncoder.encode(message, PropKit.get("encoding"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		String actionKey = c.getAttr("actionKey");
+		return actionKey + "?message="+message+"&type=error";
 	}
 	
 }

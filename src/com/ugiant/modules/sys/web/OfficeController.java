@@ -49,7 +49,7 @@ public class OfficeController extends BaseController {
 	 * 获取机构JSON数据
 	 */
 	public void treeData() {
-		Integer extId = this.getParaToInt("extId");
+		Long extId = this.getParaToLong("extId");
 		String type = this.getPara("type");
 		Integer grade = this.getParaToInt("grade");
 		Boolean isAll = this.getParaToBoolean("isAll");
@@ -57,13 +57,13 @@ public class OfficeController extends BaseController {
 		List<Record> list = officeService.findList(isAll);
 		for (int i=0; i<list.size(); i++){
 			Record e = list.get(i);
-			if ((extId==null || (extId!=null && !extId.equals(e.getInt("id")) && e.getStr("parent_ids").indexOf(","+extId+",")==-1))
+			if ((extId==null || (extId!=null && !extId.equals(e.getLong("id")) && e.getStr("parent_ids").indexOf(","+extId+",")==-1))
 					&& (type == null || (type != null && (type.equals("1") ? type.equals(e.getStr("type")) : true)))
-					&& (grade == null || (grade != null && e.getInt("grade") <= grade))
+					&& (grade == null || (grade != null && e.getLong("grade") <= grade))
 					&& Useable.YES.equals(e.getStr("useable"))){
 				Map<String, Object> map = Maps.newHashMap();
-				map.put("id", e.getInt("id"));
-				map.put("pId", e.getInt("parent_id"));
+				map.put("id", e.getLong("id"));
+				map.put("pId", e.getLong("parent_id"));
 				map.put("pIds", e.getStr("parent_ids"));
 				map.put("name", e.getStr("name"));
 				if (type != null && "3".equals(type)){

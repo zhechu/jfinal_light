@@ -56,7 +56,7 @@ public class Role extends BaseModel<Role> {
 	 * @param userId 用户 id
 	 * @return
 	 */
-	public List<Record> findByUserId(String useable, Integer userId) {
+	public List<Record> findByUserId(String useable, Long userId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(roleColumns);
 		//sql.append(", ro.office_id office_list_id");
@@ -74,7 +74,7 @@ public class Role extends BaseModel<Role> {
 	 * @param userId 用户 id
 	 * @return
 	 */
-	public List<Record> findByUserId(Integer userId) {
+	public List<Record> findByUserId(Long userId) {
 		return findByUserId(Useable.YES, userId);
 	}
 	

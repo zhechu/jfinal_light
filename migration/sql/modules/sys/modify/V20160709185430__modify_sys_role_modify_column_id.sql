@@ -1,0 +1,1 @@
+alter table sys_role modify column id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号';

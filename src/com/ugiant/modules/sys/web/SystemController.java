@@ -53,10 +53,6 @@ public class SystemController extends BaseController {
 			this.redirect(adminIndexPath);
 			return;
 		}
-		String message = this.getPara("message");
-		if (StringUtils.isNotBlank(message)) {
-			this.setAttr("message", message);
-		}
 		this.setAttrMessage(); // 回显提示信息
 		this.createToken("loginToken"); // token
 		this.render("sysLogin.jsp");
@@ -110,8 +106,10 @@ public class SystemController extends BaseController {
 	 */
 	public void logout() {
 		Subject subject = UserUtils.getSubject();
-		if (subject.isAuthenticated()) {
-			subject.logout();
+		if (subject != null) {
+			//if (subject.isAuthenticated()) {
+				subject.logout();
+			//}
 		}
 		this.redirect(adminPath+"/login");
 	}

@@ -1,5 +1,9 @@
 package com.ugiant.common.utils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -24,8 +28,19 @@ public class PageUtils {
 	 * @param pageNo 当前页页码
 	 * @return
 	 */
-	public static int getPageNo(Integer pageNo) {
-		return pageNo!=null ? pageNo : PAGE_NO;
+	public static int getPageNo(HttpServletRequest request, HttpServletResponse response, Integer pageNo, Boolean repage) {
+		if (repage!=null && repage) { // 回到原页码，优先级最高
+			String pageNoStr = CookieUtils.getCookie(request, "pageNo");
+			if (StrKit.notBlank(pageNoStr)) {
+				pageNo = Integer.parseInt(pageNoStr);
+			}
+		}
+		if (pageNo == null) {
+			pageNo = PAGE_NO;
+		}
+		// 存储当前页页码
+		CookieUtils.setCookie(response, "pageNo", String.valueOf(pageNo));
+		return pageNo;
 	}
 	
 	/**
@@ -33,7 +48,7 @@ public class PageUtils {
 	 * @return
 	 */
 	public static int getPageNo() {
-		return getPageNo(null);
+		return getPageNo(null, null, null, null);
 	}
 	
 	/**
@@ -64,6 +79,20 @@ public class PageUtils {
 	 */
 	public static Page<Record> getPage(int pageNo, int pageSize, String select, String sqlExceptSelect) {
 		com.jfinal.plugin.activerecord.Page<Record> page = Db.paginate(pageNo, pageSize, select, sqlExceptSelect);
+		return new com.ugiant.common.model.Page<Record>(page.getList(), page.getPageNumber(), page.getPageSize(), page.getTotalPage(), page.getTotalRow());
+	}
+	
+	/**
+	 * 获取分页对象
+	 * @param pageNo
+	 * @param pageSize
+	 * @param select
+	 * @param sqlExceptSelect
+	 * @param paras
+	 * @return
+	 */
+	public static Page<Record> getPage(int pageNo, int pageSize, String select, String sqlExceptSelect, Object... paras) {
+		com.jfinal.plugin.activerecord.Page<Record> page = Db.paginate(pageNo, pageSize, select, sqlExceptSelect, paras);
 		return new com.ugiant.common.model.Page<Record>(page.getList(), page.getPageNumber(), page.getPageSize(), page.getTotalPage(), page.getTotalRow());
 	}
 	
