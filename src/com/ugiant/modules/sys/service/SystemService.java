@@ -6,8 +6,11 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
+import com.jfinal.aop.Before;
+import com.jfinal.aop.Enhancer;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.tx.Tx;
 import com.ugiant.common.security.Digests;
 import com.ugiant.common.service.BaseService;
 import com.ugiant.common.utils.Encodes;
@@ -24,7 +27,7 @@ import com.ugiant.modules.sys.utils.UserUtils;
  */
 public class SystemService extends BaseService {
 	
-	public static final SystemService service = new SystemService(); // 系统管理业务单例
+	public static final SystemService service = Enhancer.enhance(SystemService.class); // 系统管理业务单例
 
 	public static final String HASH_ALGORITHM = "SHA-1";
 	public static final int HASH_INTERATIONS = 1024;
@@ -141,6 +144,7 @@ public class SystemService extends BaseService {
 	 * 更新用户登录信息
 	 * @param user
 	 */
+	@Before(Tx.class)
 	public boolean updateUserLoginInfo(Record currentUser) {
 		Record user = new Record();
 		user.set("id", currentUser.getLong("id"));
@@ -157,6 +161,7 @@ public class SystemService extends BaseService {
 	 * 更新用户信息
 	 * @param user
 	 */
+	@Before(Tx.class)
 	public boolean updateUser(Record user) {
 		Long[] roleIdList = user.get("role_id_list");
 		if (roleIdList != null) { // 角色不为空，则更新角色
@@ -182,6 +187,7 @@ public class SystemService extends BaseService {
 	 * @param user
 	 * @return
 	 */
+	@Before(Tx.class)
 	public boolean saveUser(Record user) {
 		Long[] roleIdList = user.get("role_id_list");
 		if (roleIdList != null) { // 角色不为空，则删除，因数据库没有 role_id_list 字段
@@ -212,6 +218,7 @@ public class SystemService extends BaseService {
 	 * @param id 用户id
 	 * @param newPassword 新密码（明文）
 	 */
+	@Before(Tx.class)
 	public boolean updatePasswordById(Long id, String password) {
 		Record user = new Record();
 		user.set("id", id);
@@ -240,6 +247,7 @@ public class SystemService extends BaseService {
 	 * @param user
 	 * @return
 	 */
+	@Before(Tx.class)
 	public boolean deleteUser(Record user) {
 		// 删除用户角色关系
 		userRoleDao.deleteByUserId(user.getLong("id"));

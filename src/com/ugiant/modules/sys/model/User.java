@@ -8,15 +8,15 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.ugiant.common.model.BaseModel;
 import com.ugiant.common.utils.PageUtils;
+import com.ugiant.modules.sys.baseModel.BaseUser;
 
 /**
  * 用户 model
  * @author lingyuwang
  *
  */
-public class User extends BaseModel<User> {
+public class User extends BaseUser<User> {
 	
 	private static final long serialVersionUID = -240506514582599822L;
 	

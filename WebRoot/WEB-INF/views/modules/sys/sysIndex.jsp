@@ -16,7 +16,6 @@
 	</style>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			console.log("${tabmode}");
 			// <c:if test="${tabmode eq '1'}"> 初始化页签
 			$.fn.initJerichoTab({
                 renderTo: '#right', uniqueId: 'jerichotab',

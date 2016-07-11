@@ -2,6 +2,7 @@ package com.ugiant.modules.sys.service;
 
 import java.util.List;
 
+import com.jfinal.aop.Enhancer;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.service.BaseService;
@@ -14,7 +15,7 @@ import com.ugiant.modules.sys.model.Dict;
  */
 public class DictService extends BaseService {
 	
-	public static final DictService service = new DictService(); // 字典单例
+	public static final DictService service = Enhancer.enhance(DictService.class); // 字典单例
 
 	private Dict dictDao = Dict.dao;
 

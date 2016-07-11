@@ -2,6 +2,7 @@ package com.ugiant.modules.sys.service;
 
 import java.util.List;
 
+import com.jfinal.aop.Enhancer;
 import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.service.BaseService;
 import com.ugiant.modules.sys.model.Area;
@@ -13,7 +14,7 @@ import com.ugiant.modules.sys.model.Area;
  */
 public class AreaService extends BaseService {
 	
-	public static final AreaService service = new AreaService(); // 区域单例
+	public static final AreaService service = Enhancer.enhance(AreaService.class); // 区域单例
 
 	private Area areaDao = Area.dao;
 	

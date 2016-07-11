@@ -25,7 +25,6 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinal.upload.UploadFile;
 import com.ugiant.common.model.TempFileRender;
 import com.ugiant.common.utils.CodeUtils;
@@ -55,6 +54,7 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	public void index() {
+		systemService.updatePasswordById(1L, "654321");
 		this.render("userIndex.jsp");
 	}
 	
@@ -108,7 +108,7 @@ public class UserController extends BaseController {
 	 * 用户个人信息页
 	 * @return
 	 */
-	@Before({SysUserInfoValidator.class, Tx.class})
+	@Before({SysUserInfoValidator.class})
 	public void info() {
 		Record currentUser = UserUtils.getUser();
 		Boolean is_save = this.getParaToBoolean("is_save");
@@ -138,7 +138,7 @@ public class UserController extends BaseController {
 	 * 添加或编译用户信息
 	 * @throws UnsupportedEncodingException 
 	 */
-	@Before({SysUserSaveValidator.class, Tx.class})
+	@Before({SysUserSaveValidator.class})
 	public void save() throws UnsupportedEncodingException {
 		String message = "";
 		boolean repage = false; // 若是更新，则需恢复页码，否则，不需
@@ -242,7 +242,7 @@ public class UserController extends BaseController {
 	 * 修改密码页
 	 * @return
 	 */
-	@Before({SysUserModifyPwdValidator.class, Tx.class})
+	@Before({SysUserModifyPwdValidator.class})
 	public void modifyPwd() {
 		Record currentUser = UserUtils.getUser();
 		Boolean is_save = this.getParaToBoolean("is_save");
@@ -272,7 +272,6 @@ public class UserController extends BaseController {
 	 * 删除
 	 * @throws UnsupportedEncodingException 
 	 */
-	@Before({Tx.class})
 	public void delete() throws UnsupportedEncodingException {
 		String message = "";
 		Long id = this.getParaToLong("id");
@@ -393,7 +392,6 @@ public class UserController extends BaseController {
 	/**
 	 * 导入
 	 */
-	@Before({Tx.class})
 	public void importExcel() {
 		UploadFile uploadFile = this.getFile("file");
 		File file = null;
