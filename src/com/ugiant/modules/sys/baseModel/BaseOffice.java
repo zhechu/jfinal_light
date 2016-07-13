@@ -9,19 +9,19 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
 
     public final static String TABLE_NAME = "sys_office";
 
-    public void setId(String id) {
+    public void setId(Long id) {
         set("id", id);
     }
 
-    public Long getId(String id) {
+    public Long getId() {
         return get("id");
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         set("parent_id", parentId);
     }
 
-    public Long getParentId(String parentId) {
+    public Long getParentId() {
         return get("parent_id");
     }
 
@@ -29,7 +29,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("parent_ids", parentIds);
     }
 
-    public String getParentIds(String parentIds) {
+    public String getParentIds() {
         return get("parent_ids");
     }
 
@@ -37,23 +37,23 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("name", name);
     }
 
-    public String getName(String name) {
+    public String getName() {
         return get("name");
     }
 
-    public void setSort(String sort) {
+    public void setSort(java.math.BigDecimal sort) {
         set("sort", sort);
     }
 
-    public java.math.BigDecimal getSort(String sort) {
+    public java.math.BigDecimal getSort() {
         return get("sort");
     }
 
-    public void setAreaId(String areaId) {
+    public void setAreaId(Long areaId) {
         set("area_id", areaId);
     }
 
-    public Long getAreaId(String areaId) {
+    public Long getAreaId() {
         return get("area_id");
     }
 
@@ -61,7 +61,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("code", code);
     }
 
-    public String getCode(String code) {
+    public String getCode() {
         return get("code");
     }
 
@@ -69,7 +69,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("type", type);
     }
 
-    public String getType(String type) {
+    public String getType() {
         return get("type");
     }
 
@@ -77,7 +77,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("grade", grade);
     }
 
-    public String getGrade(String grade) {
+    public String getGrade() {
         return get("grade");
     }
 
@@ -85,7 +85,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("address", address);
     }
 
-    public String getAddress(String address) {
+    public String getAddress() {
         return get("address");
     }
 
@@ -93,15 +93,15 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("zip_code", zipCode);
     }
 
-    public String getZipCode(String zipCode) {
+    public String getZipCode() {
         return get("zip_code");
     }
 
-    public void setMaster(String master) {
+    public void setMaster(Long master) {
         set("master", master);
     }
 
-    public Long getMaster(String master) {
+    public Long getMaster() {
         return get("master");
     }
 
@@ -109,7 +109,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("phone", phone);
     }
 
-    public String getPhone(String phone) {
+    public String getPhone() {
         return get("phone");
     }
 
@@ -117,7 +117,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("fax", fax);
     }
 
-    public String getFax(String fax) {
+    public String getFax() {
         return get("fax");
     }
 
@@ -125,7 +125,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("email", email);
     }
 
-    public String getEmail(String email) {
+    public String getEmail() {
         return get("email");
     }
 
@@ -133,55 +133,55 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("useable", useable);
     }
 
-    public String getUseable(String useable) {
+    public String getUseable() {
         return get("useable");
     }
 
-    public void setPrimaryPerson(String primaryPerson) {
+    public void setPrimaryPerson(Long primaryPerson) {
         set("primary_person", primaryPerson);
     }
 
-    public Long getPrimaryPerson(String primaryPerson) {
+    public Long getPrimaryPerson() {
         return get("primary_person");
     }
 
-    public void setDeputyPerson(String deputyPerson) {
+    public void setDeputyPerson(Long deputyPerson) {
         set("deputy_person", deputyPerson);
     }
 
-    public Long getDeputyPerson(String deputyPerson) {
+    public Long getDeputyPerson() {
         return get("deputy_person");
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(Long createBy) {
         set("create_by", createBy);
     }
 
-    public Long getCreateBy(String createBy) {
+    public Long getCreateBy() {
         return get("create_by");
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(java.util.Date createDate) {
         set("create_date", createDate);
     }
 
-    public java.util.Date getCreateDate(String createDate) {
+    public java.util.Date getCreateDate() {
         return get("create_date");
     }
 
-    public void setUpdateBy(String updateBy) {
+    public void setUpdateBy(Long updateBy) {
         set("update_by", updateBy);
     }
 
-    public Long getUpdateBy(String updateBy) {
+    public Long getUpdateBy() {
         return get("update_by");
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(java.util.Date updateDate) {
         set("update_date", updateDate);
     }
 
-    public java.util.Date getUpdateDate(String updateDate) {
+    public java.util.Date getUpdateDate() {
         return get("update_date");
     }
 
@@ -189,7 +189,7 @@ public abstract class BaseOffice<M extends BaseOffice<M>> extends BaseModel<M> i
         set("remarks", remarks);
     }
 
-    public String getRemarks(String remarks) {
+    public String getRemarks() {
         return get("remarks");
     }
 

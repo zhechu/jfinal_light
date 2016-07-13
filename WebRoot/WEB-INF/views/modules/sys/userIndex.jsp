@@ -27,7 +27,7 @@
 		var setting = {data:{simpleData:{enable:true,idKey:"id",pIdKey:"pId",rootPId:'0'}},
 			callback:{onClick:function(event, treeId, treeNode){
 					var id = treeNode.id == '0' ? '' :treeNode.id;
-					$('#officeContent').attr("src","${ctx}/sys/user/list?office_id="+id+"&office_name="+treeNode.name);
+					$('#officeContent').attr("src","${ctx}/sys/user/list?user.officeId="+id+"&officeName="+treeNode.name);
 				}
 			}
 		};

@@ -1,40 +1,30 @@
 package com.ugiant.modules.sys.web;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresUser;
 
+import com.google.common.collect.Lists;
 import com.jfinal.aop.Before;
-import com.jfinal.kit.PathKit;
 import com.jfinal.kit.PropKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
-import com.ugiant.common.model.TempFileRender;
 import com.ugiant.common.utils.CodeUtils;
 import com.ugiant.common.utils.CryptUtil;
-import com.ugiant.common.utils.ExcelUtils;
-import com.ugiant.common.utils.FileUtils;
 import com.ugiant.common.utils.PageUtils;
+import com.ugiant.common.utils.excel.ExportExcel;
+import com.ugiant.common.utils.excel.ImportExcel;
 import com.ugiant.common.web.BaseController;
+import com.ugiant.modules.sys.model.User;
 import com.ugiant.modules.sys.service.SystemService;
 import com.ugiant.modules.sys.utils.UserUtils;
+import com.ugiant.modules.sys.validator.SysUserImportValidator;
 import com.ugiant.modules.sys.validator.SysUserInfoValidator;
 import com.ugiant.modules.sys.validator.SysUserModifyPwdValidator;
 import com.ugiant.modules.sys.validator.SysUserSaveValidator;
@@ -54,7 +44,6 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	public void index() {
-		systemService.updatePasswordById(1L, "654321");
 		this.render("userIndex.jsp");
 	}
 	
@@ -67,15 +56,16 @@ public class UserController extends BaseController {
 		int pageNo = PageUtils.getPageNo(this.getRequest(), this.getResponse(), this.getParaToInt("pageNo"), repage);
 		int pageSize = PageUtils.getPageSize(this.getParaToInt("pageSize"));
 		
-		// 封装用户
-		Record user = encapsulateUser();
+		User user = this.getBean(User.class);
 		
-		Page<Record> page = systemService.findPageByUser(pageNo, pageSize, user);
+		Page<User> page = systemService.findPageByUser(pageNo, pageSize, user);
 		if (repage!=null && repage && page.getList().isEmpty() && pageNo>1) { // 若需恢复页码，则检查其恢复页是否有记录，若没有，则页码减1
 			page = systemService.findPageByUser(pageNo-1, pageSize, user);
 		}
 		
-		this.setAttr("user", user);
+		this.setAttr("companyName", this.getPara("companyName")); // 回显所属公司名称
+		this.setAttr("officeName", this.getPara("officeName")); // 回显所属部门名称
+		this.setAttr("user", user); // 回显查询信息
 		this.setAttr("page", page);
 		this.setAttrMessage();
 		this.render("userList.jsp");
@@ -86,16 +76,12 @@ public class UserController extends BaseController {
 	 * @return
 	 */
 	public void form() {
-		Record user = null;
+		User user = null;
 		Long id = this.getParaToLong("id");
 		if (id != null) { // 编辑
 			user = systemService.getUserById(id);
 		} else { // 添加
-			user = new Record();
-			user.set("company_id", UserUtils.getUser().getLong("company_id"));
-			user.set("company_name", UserUtils.getUser().getStr("company_name"));
-			user.set("office_id", UserUtils.getUser().getLong("office_id"));
-			user.set("office_name", UserUtils.getUser().getStr("office_name"));
+			user = new User();
 		}
 		this.setAttr("user", user);
 		this.setAttr("allRoles", systemService.findAllRole());
@@ -110,15 +96,11 @@ public class UserController extends BaseController {
 	 */
 	@Before({SysUserInfoValidator.class})
 	public void info() {
-		Record currentUser = UserUtils.getUser();
+		User currentUser = UserUtils.getUser();
 		Boolean is_save = this.getParaToBoolean("is_save");
 		if (is_save!=null && is_save) { // 提交表单时，再保存
-			Record user = new Record();
-			user.set("id", currentUser.getLong("id"));
-			user.set("email", this.getPara("email"));
-			user.set("phone", this.getPara("phone"));
-			user.set("mobile", this.getPara("mobile"));
-			user.set("remarks", this.getPara("remarks"));
+			User user = this.getModel(User.class);
+			user.setId(currentUser.getId());
 			boolean flag = systemService.updateUser(user);
 			if (flag) {
 				currentUser = UserUtils.getUser(); // 刷新
@@ -135,41 +117,35 @@ public class UserController extends BaseController {
 	}
 	
 	/**
-	 * 添加或编译用户信息
+	 * 添加或编辑用户信息
 	 * @throws UnsupportedEncodingException 
 	 */
 	@Before({SysUserSaveValidator.class})
 	public void save() throws UnsupportedEncodingException {
 		String message = "";
 		boolean repage = false; // 若是更新，则需恢复页码，否则，不需
-		Long id = this.getParaToLong("id");
-		Long company_id = this.getParaToLong("company_id");
-		Long office_id = this.getParaToLong("office_id");
-		String no = this.getPara("no");
-		String name = this.getPara("name");
-		String oldLoginName = this.getPara("oldLoginName");
-		String loginName = this.getPara("loginName");
-		String newPassword = this.getPara("newPassword");
-		String email = this.getPara("email");
-		String phone = this.getPara("phone");
-		String mobile = this.getPara("mobile");
-		String loginFlag = this.getPara("loginFlag");
+		
 		Long[] roleIdList = this.getParaValuesToLong("roleIdList");
-		String remarks = this.getPara("remarks");
+		User user = this.getBean(User.class);
+		user.setRoleIdList(Arrays.asList(roleIdList)); // 用户角色
+		
+		Long id = user.getId();
+		String oldLoginName = this.getPara("oldLoginName");
+		String newPassword = this.getPara("newPassword");
 		if (id != null) { // 编辑
 			repage = true;
-			Record sourceUser = systemService.getUserById(id);
+			User sourceUser = systemService.getUserById(id);
 			if (sourceUser != null) {
-				if (!systemService.isNotExistLoginName(oldLoginName, loginName)){ // 用户登录名去重
-					message = "保存用户 " + sourceUser.getStr("login_name") + " 失败，登录名已存在";
+				if (!systemService.isNotExistLoginName(oldLoginName, user.getLoginName())){ // 用户登录名去重
+					message = "保存用户 " + sourceUser.getLoginName() + " 失败，登录名已存在";
 				} else {
-					Record user = new Record();
-					user.set("id", id);
-					// 封装用户
-					encapsulateUser(company_id, office_id, no, name, loginName, newPassword, email, phone, mobile,
-							loginFlag, roleIdList, remarks, user);
+					if (StrKit.notBlank(newPassword)) {
+						newPassword = CryptUtil.getFromBase64(newPassword);
+						newPassword = systemService.entryptPassword(newPassword);
+						user.set("password", newPassword);
+					}
 					if (systemService.updateUser(user)) {
-						message = "保存用户 " + loginName + " 成功";
+						message = "保存用户 " + user.getLoginName() + " 成功";
 					} else {
 						message = "保存用户失败，系统出现点问题，请稍后再试.";
 					}
@@ -178,12 +154,13 @@ public class UserController extends BaseController {
 				message = "保存用户失败，参数有误";
 			}
 		} else { // 添加
-			Record user = new Record();
-			// 封装用户
-			encapsulateUser(company_id, office_id, no, name, loginName, newPassword, email, phone, mobile,
-					loginFlag, roleIdList, remarks, user);
+			if (StrKit.notBlank(newPassword)) {
+				newPassword = CryptUtil.getFromBase64(newPassword);
+				newPassword = systemService.entryptPassword(newPassword);
+				user.set("password", newPassword);
+			}
 			if (systemService.saveUser(user)) {
-				message = "保存用户'" + loginName + "成功";
+				message = "保存用户'" + user.getLoginName() + "成功";
 			} else {
 				message = "保存用户失败，系统出现点问题，请稍后再试.";
 			}
@@ -192,48 +169,11 @@ public class UserController extends BaseController {
 	}
 
 	/**
-	 * 封装用户
-	 * @param company_id
-	 * @param office_id
-	 * @param no
-	 * @param name
-	 * @param loginName
-	 * @param newPassword
-	 * @param email
-	 * @param phone
-	 * @param mobile
-	 * @param loginFlag
-	 * @param roleIdList
-	 * @param remarks
-	 * @param user
-	 */
-	private void encapsulateUser(Long company_id, Long office_id, String no, String name, String loginName,
-			String newPassword, String email, String phone, String mobile, String loginFlag, Long[] roleIdList,
-			String remarks, Record user) {
-		user.set("company_id", company_id);
-		user.set("office_id", office_id);
-		user.set("no", no);
-		user.set("name", name);
-		user.set("login_name", loginName);
-		if (StrKit.notBlank(newPassword)) {
-			newPassword = CryptUtil.getFromBase64(newPassword);
-			newPassword = systemService.entryptPassword(newPassword);
-			user.set("password", newPassword);
-		}
-		user.set("email", email);
-		user.set("phone", phone);
-		user.set("mobile", mobile);
-		user.set("login_flag", loginFlag);
-		user.set("remarks", remarks);
-		user.set("role_id_list", roleIdList);
-	}
-	
-	/**
 	 * 判断用户登录名是否重复
 	 */
 	public void checkLoginName() {
 		String oldLoginName = this.getPara("oldLoginName");
-		String loginName = this.getPara("loginName");
+		String loginName = this.getPara("user.loginName");
 		boolean flag = systemService.isNotExistLoginName(oldLoginName, loginName);
 		this.renderJson(flag);
 	}
@@ -244,15 +184,15 @@ public class UserController extends BaseController {
 	 */
 	@Before({SysUserModifyPwdValidator.class})
 	public void modifyPwd() {
-		Record currentUser = UserUtils.getUser();
+		User currentUser = UserUtils.getUser();
 		Boolean is_save = this.getParaToBoolean("is_save");
 		if (is_save!=null && is_save) { // 提交表单时，再保存
 			String oldPassword = this.getPara("oldPassword");
 			oldPassword = CryptUtil.getFromBase64(oldPassword);
 			String newPassword = this.getPara("newPassword");
 			newPassword = CryptUtil.getFromBase64(newPassword);
-			if (systemService.validatePassword(oldPassword, currentUser.getStr("password"))){
-				boolean flag = systemService.updatePasswordById(currentUser.getLong("id"), newPassword);
+			if (systemService.validatePassword(oldPassword, currentUser.getPassword())){
+				boolean flag = systemService.updatePasswordById(currentUser.getId(), newPassword);
 				if (flag) {
 					this.setAttr("message", "修改密码成功");
 				} else {
@@ -276,9 +216,9 @@ public class UserController extends BaseController {
 		String message = "";
 		Long id = this.getParaToLong("id");
 		if (id != null) {
-			Record user = systemService.getUserById(id);
+			User user = systemService.getUserById(id);
 			if (user != null) {
-				String loginName = user.getStr("login_name");
+				String loginName = user.getLoginName();
 				if (systemService.deleteUser(user)) {
 					message = "删除用户 "+loginName+" 成功";
 				} else {
@@ -295,170 +235,98 @@ public class UserController extends BaseController {
 	
 	/**
 	 * 导出
+	 * @throws IOException 
 	 */
-	public void export() {
-		Record user = encapsulateUser();
-		List<Record> userList = systemService.findByUser(user);
-		File excelFile = getExcelFile(userList);
-		this.render(new TempFileRender(excelFile));
+	public void export() throws IOException {
+		User user = this.getBean(User.class);
+		List<User> userList = systemService.findByUser(user);
+		String fileName = "用户数据" + CodeUtils.generateCode("yyyyMMddHHmmss") + ".xlsx";
+		new ExportExcel("用户数据", User.class).setDataList(userList).write(this.getResponse(), fileName).dispose();
+		this.renderNull();
 	}
 
 	/**
-	 * 获取写入导出数据的文件
-	 * @param list
-	 * @return
-	 */
-	private File getExcelFile(List<Record> list) {
-		String templateName = PathKit.getRootClassPath() + PropKit.get("excel_template") + File.separator + "sys_user_export.xlsx";
-		XSSFWorkbook wb = null;
-		InputStream is = null;
-		OutputStream os = null;
-		String excelFileName = "用户数据" + CodeUtils.generateCode("yyyyMMddHHmmss") + ".xlsx";
-		File excelFile = new File(PathKit.getWebRootPath()+ File.separator + "temp"+ File.separator + excelFileName);
-		FileUtils.safeMkdir(excelFile); // 检查文件夹是否存在，不存在则先创建
-		try {
-			is = new FileInputStream(templateName);
-			wb = new XSSFWorkbook(is);
-			Map<String, CellStyle> styles = ExcelUtils.createStyles(wb);
-			XSSFSheet sheet = wb.getSheetAt(0);
-			Row row = null;
-			Record user = null;
-			for (int i = 0; i < list.size(); i++) { // 从第3行开始
-				row = sheet.createRow(i+2);
-				user = list.get(i);
-				// 归属公司
-				ExcelUtils.addCell(wb, row, 0, user.getStr("company_name"), ExcelUtils.ALIGN_CENTER, styles, String.class);
-				// 归属部门
-				ExcelUtils.addCell(wb, row, 1, user.getStr("office_name"), ExcelUtils.ALIGN_CENTER, styles, String.class);
-				// 登录名
-				ExcelUtils.addCell(wb, row, 2, user.getStr("login_name"), ExcelUtils.ALIGN_CENTER, styles, String.class);
-				// 姓名
-				ExcelUtils.addCell(wb, row, 3, user.getStr("name"), ExcelUtils.ALIGN_CENTER, styles, String.class);
-				// 工号
-				ExcelUtils.addCell(wb, row, 4, user.getStr("no"), ExcelUtils.ALIGN_CENTER, styles, String.class);
-				// 邮箱
-				ExcelUtils.addCell(wb, row, 5, user.getStr("email"), ExcelUtils.ALIGN_LEFT, styles, String.class);
-				// 电话
-				ExcelUtils.addCell(wb, row, 6, user.getStr("phone"), ExcelUtils.ALIGN_LEFT, styles, String.class);
-				// 手机
-				ExcelUtils.addCell(wb, row, 7, user.getStr("mobile"), ExcelUtils.ALIGN_LEFT, styles, String.class);
-				// 创建时间
-				ExcelUtils.addCell(wb, row, 8, user.getDate("create_date"), ExcelUtils.ALIGN_CENTER, styles, Date.class);
-				// 最后登录IP
-				ExcelUtils.addCell(wb, row, 9, user.getStr("login_ip"), ExcelUtils.ALIGN_CENTER, styles, String.class);
-				// 最后登录日期
-				ExcelUtils.addCell(wb, row, 10, user.getDate("login_date"), ExcelUtils.ALIGN_CENTER, styles, Date.class);
-				// 角色
-				ExcelUtils.addCell(wb, row, 11, user.getStr("role_names"), ExcelUtils.ALIGN_LEFT, styles, String.class);
-				// 备注
-				ExcelUtils.addCell(wb, row, 12, user.getStr("remarks"), ExcelUtils.ALIGN_LEFT, styles, String.class);
-			}
-			os = new FileOutputStream(excelFile);
-			wb.write(os);
-			os.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (os != null) {
-				try {
-					os.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return excelFile;
-	}
-	
-	/**
 	 * 下载导入用户数据模板
+	 * @throws IOException 
 	 */
-	public void importTemplate() {
-		String templateName = PathKit.getRootClassPath() + PropKit.get("excel_template") + File.separator + "sys_user_import.xlsx";
-		File templateFile = new File(templateName);
-		File excelFile = new File(PathKit.getWebRootPath()+ File.separator + "temp" + File.separator + "用户数据导入模板.xlsx");
-		FileUtils.safeMkdir(excelFile); // 检查文件夹是否存在，不存在则先创建
-		FileUtils.copyFile(templateFile, excelFile);
-		this.render(new TempFileRender(excelFile));
+	public void importTemplate() throws IOException {
+		List<User> userList = Lists.newArrayList();
+		userList.add(UserUtils.getUser());
+		String fileName = "用户数据导入模板.xlsx";
+		new ExportExcel("用户数据", User.class, 2).setDataList(userList).write(this.getResponse(), fileName).dispose();
+		this.renderNull();
 	}
 	
 	/**
 	 * 导入
+	 * @throws UnsupportedEncodingException 
 	 */
-	public void importExcel() {
+	@Before(SysUserImportValidator.class)
+	public void importExcel() throws UnsupportedEncodingException {
+		String message;
 		UploadFile uploadFile = this.getFile("file");
-		File file = null;
-		if (uploadFile != null) {
-			List<Record> list = new ArrayList<Record>();
-			InputStream is = null;
-			XSSFWorkbook wb = null;
-			try {
-				file = uploadFile.getFile();
-				is = new FileInputStream(file);
-				wb = new XSSFWorkbook(is);
-				XSSFSheet sheet = wb.getSheetAt(0);
-				Row row = null;
-				Record record = null;
-				for (int i = 0; i < sheet.getLastRowNum(); i++) { // 从第3行开始
-					row = sheet.getRow(i+2);
-					if (row==null || row.getCell(0)==null || StrKit.isBlank(row.getCell(0).toString())) {
-						continue;
+		File file = uploadFile.getFile();
+		try {
+			int successNum = 0;
+			int failureNum = 0;
+			StringBuilder failureMsg = new StringBuilder();
+			ImportExcel ei = new ImportExcel(file, 1, 0);
+			List<User> list = ei.getDataList(User.class);
+			for (User user : list){
+				try{
+					if (systemService.isNotExistLoginName("", user.getLoginName())){
+						user.setPassword(systemService.entryptPassword("123456"));
+						validateUser(user); // 验证数据
+						systemService.saveUser(user);
+						successNum++;
+					} else {
+						throw new RuntimeException("登录名 "+user.getLoginName()+" 已存在");
 					}
-					record = new Record();
-					
-					list.add(record);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (is != null) {
-					try {
-						is.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+				} catch (RuntimeException ex){
+					failureMsg.append("<br/>用户 "+user.getLoginName()+" 导入失败：");
+					failureMsg.append(ex.getMessage()+"; ");
+					failureNum++;
+				} catch (Exception ex) {
+					failureMsg.append("<br/>用户 "+user.getLoginName()+" 导入失败："+ex.getMessage());
 				}
 			}
-			// 删除导入文件
-			file.delete();
-			
-			// 数据验证与完善
-		} else {
-			
+			if (failureNum>0){
+				failureMsg.insert(0, "，失败 "+failureNum+" 条用户，导入信息如下：");
+			}
+			message = "已成功导入 "+successNum+" 条用户"+failureMsg;
+		} catch (Exception e) {
+			message = "导入用户失败！失败信息："+e.getMessage();
 		}
+		file.delete(); // 删除导入的文件
+		this.redirect(adminPath+"/sys/user/list?message="+URLEncoder.encode(message, PropKit.get("encoding")));
 	}
-	
+
 	/**
-	 * 封装用户参数
-	 * @return
+	 * 导入验证
+	 * @param user
 	 */
-	private Record encapsulateUser() {
-		Long companyId = this.getParaToLong("company_id");
-		String companyName = this.getPara("company_name");
-		Long officeId = this.getParaToLong("office_id");
-		String officeName = this.getPara("office_name");
-		String loginName = this.getPara("login_name");
-		String name = this.getPara("name");
-		String loginFlag = this.getPara("login_flag");
-		Long roleId = this.getParaToLong("role_id");
-		
-		Record user = new Record(); // 用户
-		user.set("company_id", companyId);
-		user.set("company_name", companyName);
-		user.set("office_id", officeId);
-		user.set("office_name", officeName);
-		user.set("login_name", loginName);
-		user.set("name", name);
-		user.set("login_flag", loginFlag);
-		user.set("role_id", roleId);
-		return user;
+	private void validateUser(User user) {
+		if (StrKit.isBlank(user.getLoginName())) {
+			throw new RuntimeException("登录名不能为空");
+		}
+		if (user.getCompanyId() == null) {
+			throw new RuntimeException("归属公司有误");
+		}
+		if (user.getOfficeId() == null) {
+			throw new RuntimeException("归属部门有误");
+		}
+		if (StrKit.isBlank(user.getName())) {
+			throw new RuntimeException("姓名不能为空");
+		}
+		if (StrKit.isBlank(user.getEmail())) {
+			throw new RuntimeException("邮箱不能为空");
+		}
+		if (StrKit.isBlank(user.getMobile())) {
+			throw new RuntimeException("手机不能为空");
+		}
+		if (user.getRoleList()==null || user.getRoleList().isEmpty()) {
+			throw new RuntimeException("角色有误");
+		}
 	}
 	
 }

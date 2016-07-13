@@ -9,19 +9,19 @@ public abstract class BaseRoleOffice<M extends BaseRoleOffice<M>> extends BaseMo
 
     public final static String TABLE_NAME = "sys_role_office";
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(Long roleId) {
         set("role_id", roleId);
     }
 
-    public Long getRoleId(String roleId) {
+    public Long getRoleId() {
         return get("role_id");
     }
 
-    public void setOfficeId(String officeId) {
+    public void setOfficeId(Long officeId) {
         set("office_id", officeId);
     }
 
-    public Long getOfficeId(String officeId) {
+    public Long getOfficeId() {
         return get("office_id");
     }
 

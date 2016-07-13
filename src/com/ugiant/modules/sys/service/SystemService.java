@@ -69,17 +69,8 @@ public class SystemService extends BaseService {
 	 * @param user 用户对象
 	 * @return
 	 */
-	public Page<Record> findPageByUser(int pageNo, int pageSize, Record user) {
-		Page<Record> page = userDao.findPageByUser(pageNo, pageSize, user);
-		for (Record sourUser : page.getList()) {
-			List<String> roleNames = Lists.newArrayList();
-			List<Record> roleList = roleDao.findByUserId(sourUser.getLong("id"));
-			for (Record role : roleList) {
-				roleNames.add(role.getStr("name"));
-			}
-			sourUser.set("role_names", StringUtils.join(roleNames, ","));
-		}
-		return page;
+	public Page<User> findPageByUser(int pageNo, int pageSize, User user) {
+		return userDao.findPageByUser(pageNo, pageSize, user);
 	}
 	
 	/**
@@ -87,17 +78,8 @@ public class SystemService extends BaseService {
 	 * @param user
 	 * @return
 	 */
-	public List<Record> findByUser(Record user) {
-		List<Record> userList = userDao.find(user);
-		for (Record sourUser : userList) {
-			List<String> roleNames = Lists.newArrayList();
-			List<Record> roleList = roleDao.findByUserId(sourUser.getLong("id"));
-			for (Record role : roleList) {
-				roleNames.add(role.getStr("name"));
-			}
-			sourUser.set("role_names", StringUtils.join(roleNames, ","));
-		}
-		return userList;
+	public List<User> findByUser(User user) {
+		return userDao.find(user);
 	}
 	
 	/**
@@ -112,7 +94,7 @@ public class SystemService extends BaseService {
 	 * 获取所有角色列表
 	 * @return
 	 */
-	public List<Record> findAllRole() {
+	public List<Role> findAllRole() {
 		return roleDao.findAll();
 	}
 
@@ -121,7 +103,7 @@ public class SystemService extends BaseService {
 	 * @param loginName
 	 * @return
 	 */
-	public Record getUserByLoginName(String loginName) {
+	public User getUserByLoginName(String loginName) {
 		return UserUtils.getByLoginName(loginName);
 	}
 	
@@ -130,13 +112,11 @@ public class SystemService extends BaseService {
 	 * @param id 用户 id
 	 * @return
 	 */
-	public Record getUserById(Long id) {
-		Record user = userDao.findById(id);
+	public User getUserById(Long id) {
+		User user = userDao.findById(id);
 		if (user == null){
 			return null;
 		}
-		List<Record> roleList = roleDao.findByUserId(id);
-		user.set("role_list", roleList);
 		return user;
 	}
 	
@@ -145,16 +125,14 @@ public class SystemService extends BaseService {
 	 * @param user
 	 */
 	@Before(Tx.class)
-	public boolean updateUserLoginInfo(Record currentUser) {
-		Record user = new Record();
-		user.set("id", currentUser.getLong("id"));
+	public boolean updateUserLoginInfo(User currentUser) {
 		// 保存上次登录信息
-		user.set("old_login_ip", currentUser.get("login_ip"));
-		user.set("old_login_date", currentUser.get("login_date"));
+		currentUser.set("old_login_ip", currentUser.get("login_ip"));
+		currentUser.set("old_login_date", currentUser.get("login_date"));
 		// 更新本次登录信息
-		user.set("login_ip", UserUtils.getSession().getHost());
-		user.set("login_date", new Date());
-		return userDao.update(user);
+		currentUser.set("login_ip", UserUtils.getSession().getHost());
+		currentUser.set("login_date", new Date());
+		return userDao.update(currentUser);
 	}
 	
 	/**
@@ -162,24 +140,22 @@ public class SystemService extends BaseService {
 	 * @param user
 	 */
 	@Before(Tx.class)
-	public boolean updateUser(Record user) {
-		Long[] roleIdList = user.get("role_id_list");
-		if (roleIdList != null) { // 角色不为空，则更新角色
-			Long userId = user.getLong("id");
+	public boolean updateUser(User user) {
+		List<Long> roleIdList = user.getRoleIdList();
+		if (!roleIdList.isEmpty()) { // 角色不为空，则更新角色
+			Long userId = user.getId();
 			// 删除用户角色关系
 			userRoleDao.deleteByUserId(userId);
 			// 添加用户角色关系
-			Record role = null;
+			UserRole userRole = null;
 			for (Long roleId : roleIdList) {
-				role = new Record();
-				role.set("user_id", userId);
-				role.set("role_id", roleId);
-				userRoleDao.save(role);
+				userRole = new UserRole();
+				userRole.setUserId(userId);
+				userRole.setRoleId(roleId);
+				userRole.save();
 			}
-			// 更新完角色，则删除，因数据库没有 role_id_list 字段
-			user.remove("role_id_list");
 		}
-		return userDao.update(user);
+		return user.update();
 	}
 	
 	/**
@@ -188,26 +164,23 @@ public class SystemService extends BaseService {
 	 * @return
 	 */
 	@Before(Tx.class)
-	public boolean saveUser(Record user) {
-		Long[] roleIdList = user.get("role_id_list");
-		if (roleIdList != null) { // 角色不为空，则删除，因数据库没有 role_id_list 字段
-			user.remove("role_id_list");
-		}
+	public boolean saveUser(User user) {
+		List<Long> roleIdList = user.getRoleIdList();
 		// 创建者和创建时间
-		user.set("create_by", UserUtils.getUser().getLong("id"));
-		user.set("create_date", new Date());
-		boolean flag = userDao.save(user);
-		if (roleIdList != null) { // 角色不为空，则更新角色
-			Long userId = user.getLong("id");
+		user.setCreateBy(UserUtils.getUser().getId());
+		user.setCreateDate(new Date());
+		boolean flag = user.save();
+		if (!roleIdList.isEmpty()) { // 角色不为空，则更新角色
+			Long userId = user.getId();
 			// 删除用户角色关系
 			userRoleDao.deleteByUserId(userId);
 			// 添加用户角色关系
-			Record role = null;
+			UserRole userRole = null;
 			for (Long roleId : roleIdList) {
-				role = new Record();
-				role.set("user_id", userId);
-				role.set("role_id", roleId);
-				userRoleDao.save(role);
+				userRole = new UserRole();
+				userRole.setUserId(userId);
+				userRole.setRoleId(roleId);
+				userRole.save();
 			}
 		}
 		return flag;
@@ -220,14 +193,14 @@ public class SystemService extends BaseService {
 	 */
 	@Before(Tx.class)
 	public boolean updatePasswordById(Long id, String password) {
-		Record user = new Record();
-		user.set("id", id);
-		user.set("password", entryptPassword(password));
+		User user = new User();
+		user.setId(id);
+		user.setPassword(entryptPassword(password));
 		return userDao.update(user);
 	}
 
 	/**
-	 * 登录名是否已存在
+	 * 登录名是否不存在
 	 * @param oldLoginName 原登录名
 	 * @param loginName 新登录名
 	 * @return
@@ -248,10 +221,10 @@ public class SystemService extends BaseService {
 	 * @return
 	 */
 	@Before(Tx.class)
-	public boolean deleteUser(Record user) {
+	public boolean deleteUser(User user) {
 		// 删除用户角色关系
-		userRoleDao.deleteByUserId(user.getLong("id"));
-		return userDao.delete(user);
+		userRoleDao.deleteByUserId(user.getId());
+		return user.delete();
 	}
 	
 }

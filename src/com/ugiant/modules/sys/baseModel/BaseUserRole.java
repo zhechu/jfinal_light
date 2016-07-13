@@ -9,19 +9,19 @@ public abstract class BaseUserRole<M extends BaseUserRole<M>> extends BaseModel<
 
     public final static String TABLE_NAME = "sys_user_role";
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         set("user_id", userId);
     }
 
-    public Long getUserId(String userId) {
+    public Long getUserId() {
         return get("user_id");
     }
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(Long roleId) {
         set("role_id", roleId);
     }
 
-    public Long getRoleId(String roleId) {
+    public Long getRoleId() {
         return get("role_id");
     }
 

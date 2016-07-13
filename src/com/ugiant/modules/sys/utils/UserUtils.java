@@ -2,16 +2,14 @@ package com.ugiant.modules.sys.utils;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
 import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
-import com.google.common.collect.Lists;
-import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.modules.sys.model.Menu;
+import com.ugiant.modules.sys.model.Office;
 import com.ugiant.modules.sys.model.Role;
 import com.ugiant.modules.sys.model.User;
 import com.ugiant.modules.sys.security.SystemAuthorizingRealm.Principal;
@@ -29,6 +27,8 @@ public class UserUtils {
 	
 	private static User userDao = User.dao;
 	
+	private static Office officeDao = Office.dao;
+	
 	private UserUtils() {}
 
 	/**
@@ -36,17 +36,11 @@ public class UserUtils {
 	 * @param id
 	 * @return 取不到返回null
 	 */
-	public static Record get(Long id){
-		Record user = userDao.findById(id);
+	public static User get(Long id){
+		User user = userDao.findById(id);
 		if (user == null){
 			return null;
 		}
-		List<String> roleNames = Lists.newArrayList();
-		List<Record> roleList = roleDao.findByUserId(id);
-		for (Record role : roleList) {
-			roleNames.add(role.getStr("name"));
-		}
-		user.set("role_names", StringUtils.join(roleNames, ","));
 		return user;
 	}
 	
@@ -54,8 +48,8 @@ public class UserUtils {
 	 * 菜单列表
 	 * @return
 	 */
-	public static List<Record> getMenuList(){
-		List<Record> menuList = menuDao.findAll();
+	public static List<Menu> getMenuList(){
+		List<Menu> menuList = menuDao.findAll();
 		return menuList;
 	}
 
@@ -89,13 +83,11 @@ public class UserUtils {
 	 * @param loginName
 	 * @return 取不到返回null
 	 */
-	public static Record getByLoginName(String loginName){
-		Record user = userDao.getByLoginName(loginName);
+	public static User getByLoginName(String loginName){
+		User user = userDao.getByLoginName(loginName);
 		if (user == null){
 			return null;
 		}
-		List<Record> roleList = roleDao.findByUserId(user.getLong("id"));
-		user.set("role_list", roleList);
 		return user;
 	}
 
@@ -121,25 +113,33 @@ public class UserUtils {
 	 * 获取当前用户
 	 * @return 取不到返回 new User()
 	 */
-	public static Record getUser(){
+	public static User getUser(){
 		Principal principal = getPrincipal();
 		if (principal!=null){
-			Record user = get(principal.getId());
+			User user = get(principal.getId());
 			if (user != null){
 				return user;
 			}
-			return new Record();
+			return new User();
 		}
 		// 如果没有登录，则返回实例化空的User对象。
-		return new Record();
+		return new User();
 	}
 
 	/**
 	 * 获取所有角色
 	 * @return
 	 */
-	public static List<Record> getAllRole() {
+	public static List<Role> getAllRole() {
 		return roleDao.findAll();
 	}
-	
+
+	/**
+	 * 获取当前用户有权限访问的部门
+	 * @return
+	 */
+	public static List<Office> getOfficeList(){
+		return officeDao.findAll();
+	}
+
 }

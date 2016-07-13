@@ -4,17 +4,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.dict.Useable;
-import com.ugiant.common.model.BaseModel;
+import com.ugiant.modules.sys.baseModel.BaseRole;
 
 /**
  * 角色 model
  * @author lingyuwang
  *
  */
-public class Role extends BaseModel<Role> {
+public class Role extends BaseRole<Role> {
 	
 	private static final long serialVersionUID = 5811814534062497587L;
 	
@@ -42,12 +40,12 @@ public class Role extends BaseModel<Role> {
 	 * 获取所有角色列表
 	 * @return
 	 */
-	public List<Record> findAll() {
+	public List<Role> findAll() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select a.*");
 		sql.append(" from sys_role a");
 		sql.append(" order by a.update_date desc");
-		return Db.find(sql.toString());
+		return find(sql.toString());
 	}
 	
 	/**
@@ -56,7 +54,7 @@ public class Role extends BaseModel<Role> {
 	 * @param userId 用户 id
 	 * @return
 	 */
-	public List<Record> findByUserId(String useable, Long userId) {
+	public List<Role> findByUserId(String useable, Long userId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(roleColumns);
 		//sql.append(", ro.office_id office_list_id");
@@ -66,7 +64,7 @@ public class Role extends BaseModel<Role> {
 			sql.append(" and a.useable = '").append(useable).append("'");
 		}
 		sql.append(" order by a.update_date desc");
-		return Db.find(sql.toString(), userId);
+		return find(sql.toString(), userId);
 	}
 	
 	/**
@@ -74,7 +72,7 @@ public class Role extends BaseModel<Role> {
 	 * @param userId 用户 id
 	 * @return
 	 */
-	public List<Record> findByUserId(Long userId) {
+	public List<Role> findByUserId(Long userId) {
 		return findByUserId(Useable.YES, userId);
 	}
 	
@@ -84,7 +82,7 @@ public class Role extends BaseModel<Role> {
 	 * @param loginName 登录名
 	 * @return
 	 */
-	public List<Record> findByLoginName(String useable, String loginName) {
+	public List<Role> findByLoginName(String useable, String loginName) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select").append(roleColumns);
 		//sql.append(", ro.office_id office_list_id");
@@ -94,7 +92,7 @@ public class Role extends BaseModel<Role> {
 			sql.append(" and a.useable = '").append(useable).append("'");
 		}
 		sql.append(" order by a.update_date desc");
-		return Db.find(sql.toString(), loginName);
+		return find(sql.toString(), loginName);
 	}
 	
 	/**
@@ -102,7 +100,7 @@ public class Role extends BaseModel<Role> {
 	 * @param loginName 登录名
 	 * @return
 	 */
-	public List<Record> findByLoginName(String loginName) {
+	public List<Role> findByLoginName(String loginName) {
 		return findByLoginName(Useable.YES, loginName);
 	}
 

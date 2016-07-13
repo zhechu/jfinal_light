@@ -161,7 +161,7 @@
 					<ul id="menu" class="nav" style="*white-space:nowrap;float:none;">
 						<c:set var="firstMenu" value="true"/>
 						<c:forEach items="${fns:getMenuList()}" var="menu" varStatus="idxStatus">
-							<c:if test="${menu.parent_id eq 1 && menu.is_show eq '1'}">
+							<c:if test="${menu.parentId eq 1 && menu.isShow eq '1'}">
 								<li class="menu ${not empty firstMenu && firstMenu ? ' active' : ''}">
 									<c:if test="${empty menu.href}">
 										<a class="menu" href="javascript:" data-href="${ctx}/sys/menu/tree?parentId=${menu.id}" data-id="${menu.id}"><span>${menu.name}</span></a>

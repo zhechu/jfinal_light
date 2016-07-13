@@ -138,11 +138,11 @@ public class AutoCreateEntity {
                         //result.append("    public static ").append(fieldType).append(" ").append(StrKit.toCamelCase(fieldName)).append(";\n");
                         // setter
                         result.append("\n    public void set").append(StrKit.firstCharToUpperCase(CamelCaseFieldName))
-                        	.append("(String ").append(CamelCaseFieldName).append(") {\n        set(\"").append(fieldName)
+                        	.append("(").append(fieldType).append(" ").append(CamelCaseFieldName).append(") {\n        set(\"").append(fieldName)
                         	.append("\", ").append(CamelCaseFieldName).append(");\n    }\n");
                         // getter
                         result.append("\n    public ").append(fieldType).append(" get").append(StrKit.firstCharToUpperCase(CamelCaseFieldName))
-                        .append("(String ").append(CamelCaseFieldName).append(") {\n        return get(\"").append(fieldName).append("\");\n    }\n");
+                        .append("() {\n        return get(\"").append(fieldName).append("\");\n    }\n");
                     }
                 }
                 result.append("\n}");

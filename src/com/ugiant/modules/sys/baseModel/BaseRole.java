@@ -9,19 +9,19 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
 
     public final static String TABLE_NAME = "sys_role";
 
-    public void setId(String id) {
+    public void setId(Long id) {
         set("id", id);
     }
 
-    public Long getId(String id) {
+    public Long getId() {
         return get("id");
     }
 
-    public void setOfficeId(String officeId) {
+    public void setOfficeId(Long officeId) {
         set("office_id", officeId);
     }
 
-    public Long getOfficeId(String officeId) {
+    public Long getOfficeId() {
         return get("office_id");
     }
 
@@ -29,7 +29,7 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("name", name);
     }
 
-    public String getName(String name) {
+    public String getName() {
         return get("name");
     }
 
@@ -37,7 +37,7 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("enname", enname);
     }
 
-    public String getEnname(String enname) {
+    public String getEnname() {
         return get("enname");
     }
 
@@ -45,7 +45,7 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("role_type", roleType);
     }
 
-    public String getRoleType(String roleType) {
+    public String getRoleType() {
         return get("role_type");
     }
 
@@ -53,7 +53,7 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("data_scope", dataScope);
     }
 
-    public String getDataScope(String dataScope) {
+    public String getDataScope() {
         return get("data_scope");
     }
 
@@ -61,7 +61,7 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("is_sys", isSys);
     }
 
-    public String getIsSys(String isSys) {
+    public String getIsSys() {
         return get("is_sys");
     }
 
@@ -69,39 +69,39 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("useable", useable);
     }
 
-    public String getUseable(String useable) {
+    public String getUseable() {
         return get("useable");
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(Long createBy) {
         set("create_by", createBy);
     }
 
-    public Long getCreateBy(String createBy) {
+    public Long getCreateBy() {
         return get("create_by");
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(java.util.Date createDate) {
         set("create_date", createDate);
     }
 
-    public java.util.Date getCreateDate(String createDate) {
+    public java.util.Date getCreateDate() {
         return get("create_date");
     }
 
-    public void setUpdateBy(String updateBy) {
+    public void setUpdateBy(Long updateBy) {
         set("update_by", updateBy);
     }
 
-    public Long getUpdateBy(String updateBy) {
+    public Long getUpdateBy() {
         return get("update_by");
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(java.util.Date updateDate) {
         set("update_date", updateDate);
     }
 
-    public java.util.Date getUpdateDate(String updateDate) {
+    public java.util.Date getUpdateDate() {
         return get("update_date");
     }
 
@@ -109,7 +109,7 @@ public abstract class BaseRole<M extends BaseRole<M>> extends BaseModel<M> imple
         set("remarks", remarks);
     }
 
-    public String getRemarks(String remarks) {
+    public String getRemarks() {
         return get("remarks");
     }
 

@@ -12,18 +12,19 @@ import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
 import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
 import com.jfinal.ext.plugin.shiro.ShiroPlugin;
+import com.jfinal.kit.PathKit;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.CaseInsensitiveContainerFactory;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.ViewType;
-import com.ugiant.common.dict.Table;
 import com.ugiant.modules.sys.model.Area;
 import com.ugiant.modules.sys.model.Dict;
 import com.ugiant.modules.sys.model.Menu;
 import com.ugiant.modules.sys.model.Office;
 import com.ugiant.modules.sys.model.Role;
 import com.ugiant.modules.sys.model.User;
+import com.ugiant.modules.sys.model.UserRole;
 import com.ugiant.modules.sys.route.SystemRoute;
 
 /**
@@ -43,6 +44,7 @@ public class BaseConfig extends JFinalConfig {
 		PropKit.use("config.properties");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 		me.setViewType(ViewType.JSP);
+		me.setBaseUploadPath(PathKit.getWebRootPath() + PropKit.get("upload_dir"));
 	}
 
 	@Override
@@ -62,12 +64,13 @@ public class BaseConfig extends JFinalConfig {
 		arp.setContainerFactory(new CaseInsensitiveContainerFactory(true)); // 大小写不敏感
 		me.add(arp);
 		
-		arp.addMapping(Table.SYS_MENU, Menu.class); // 菜单
-		arp.addMapping(Table.SYS_DICT, Dict.class); // 字典
-		arp.addMapping(Table.SYS_AREA, Area.class); // 区域
-		arp.addMapping(Table.SYS_OFFICE, Office.class); // 机构
-		arp.addMapping(Table.SYS_USER, User.class); // 用户
-		arp.addMapping(Table.SYS_ROLE, Role.class); // 角色
+		arp.addMapping(Menu.TABLE_NAME, Menu.class); // 菜单
+		arp.addMapping(Dict.TABLE_NAME, Dict.class); // 字典
+		arp.addMapping(Area.TABLE_NAME, Area.class); // 区域
+		arp.addMapping(Office.TABLE_NAME, Office.class); // 机构
+		arp.addMapping(User.TABLE_NAME, User.class); // 用户
+		arp.addMapping(Role.TABLE_NAME, Role.class); // 角色
+		arp.addMapping(UserRole.TABLE_NAME, UserRole.class); // 用户角色
 		
 		ShiroPlugin shiroPlugin = new ShiroPlugin(this.routes);
 		shiroPlugin.setLoginUrl(PropKit.get("adminPath")+"/login");

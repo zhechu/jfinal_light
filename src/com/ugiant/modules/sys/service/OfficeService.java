@@ -3,7 +3,6 @@ package com.ugiant.modules.sys.service;
 import java.util.List;
 
 import com.jfinal.aop.Enhancer;
-import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.service.BaseService;
 import com.ugiant.modules.sys.model.Office;
 
@@ -23,7 +22,7 @@ public class OfficeService extends BaseService {
 	 * @param parentIds 父 ids（以逗号,隔开）
 	 * @return
 	 */
-	public List<Record> findList(String parentIds) {
+	public List<Office> findList(String parentIds) {
 		parentIds = parentIds + "%";
 		return officeDao.findByParentIdsLike(parentIds);
 	}
@@ -32,7 +31,7 @@ public class OfficeService extends BaseService {
 	 * 获取所有或有数据权限的机构列表
 	 * @return
 	 */
-	public List<Record> findList(Boolean isAll){
+	public List<Office> findList(Boolean isAll){
 		/*if (isAll!=null && isAll){
 			return officeDao.findAll();
 		} else {

@@ -8,11 +8,11 @@
 		$(document).ready(function() {
 			$("#inputForm").validate({
 				rules: {
-					"name" : {required:true, maxlength:50},
-					"email" : {required:true, maxlength:50, email:true},
-					"phone" : {maxlength:50, telephone:true},
-					"mobile" : {required:true, maxlength:50, mobilephone:true},
-					"remarks" : {maxlength:200}
+					"user.name" : {required:true, maxlength:50},
+					"user.email" : {required:true, maxlength:50, email:true},
+					"user.phone" : {maxlength:50, telephone:true},
+					"user.mobile" : {required:true, maxlength:50, mobilephone:true},
+					"user.remarks" : {maxlength:200}
 				},
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
@@ -50,43 +50,43 @@
 		<div class="control-group">
 			<label class="control-label">归属公司:</label>
 			<div class="controls">
-				<label class="lbl">${user.company_name}</label>
+				<label class="lbl">${user.company.name}</label>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">归属部门:</label>
 			<div class="controls">
-				<label class="lbl">${user.office_name}</label>
+				<label class="lbl">${user.office.name}</label>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">姓名:</label>
 			<div class="controls">
-				<input type="text" name="name" value="${user.name }" readonly="true"/>
+				<input type="text" name="user.name" value="${user.name }" readonly="true"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">邮箱:</label>
 			<div class="controls">
-				<input type="email" name="email" value="${user.email }"/>
+				<input type="email" name="user.email" value="${user.email }"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">电话:</label>
 			<div class="controls">
-				<input type="tel" name="phone" value="${user.phone }"/>
+				<input type="tel" name="user.phone" value="${user.phone }"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">手机:</label>
 			<div class="controls">
-				<input type="tel" name="mobile" value="${user.mobile }"/>
+				<input type="tel" name="user.mobile" value="${user.mobile }"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">备注:</label>
 			<div class="controls">
-				<textarea name="remarks" rows="3" class="input-xlarge">${user.remarks }</textarea>
+				<textarea name="user.remarks" rows="3" class="input-xlarge">${user.remarks }</textarea>
 			</div>
 		</div>
 		<%-- <div class="control-group">
@@ -98,13 +98,13 @@
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">
-				<label class="lbl">${user.role_names}</label>
+				<label class="lbl">${user.roleNames}</label>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">上次登录:</label>
 			<div class="controls">
-				<label class="lbl">IP: ${user.old_login_ip}&nbsp;&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.old_login_date}" type="both" dateStyle="full"/></label>
+				<label class="lbl">IP: ${user.oldLoginIp}&nbsp;&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.oldLoginDate}" type="both" dateStyle="full"/></label>
 			</div>
 		</div>
 		<div class="form-actions">

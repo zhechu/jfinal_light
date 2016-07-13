@@ -18,9 +18,11 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
-import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.common.dict.Useable;
 import com.ugiant.common.utils.Encodes;
+import com.ugiant.modules.sys.model.Menu;
+import com.ugiant.modules.sys.model.Role;
+import com.ugiant.modules.sys.model.User;
 import com.ugiant.modules.sys.service.SystemService;
 import com.ugiant.modules.sys.utils.UserUtils;
 /**
@@ -47,15 +49,15 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
     	AuthenticationInfo info = null;
     	UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		// 校验用户名密码
-        Record user = systemService.getUserByLoginName(token.getUsername());
+        User user = systemService.getUserByLoginName(token.getUsername());
 		if (user != null) {
-			if (Useable.NO.equals(user.getStr("login_flag"))){
+			if (Useable.NO.equals(user.getLoginFlag())){
 				throw new AuthenticationException("msg:该已帐号禁止登录.");
 			}
-			byte[] salt = Encodes.decodeHex(user.getStr("password").substring(0,16));
+			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
 			info = new SimpleAuthenticationInfo(
 					new Principal(user),
-					user.getStr("password").substring(16),
+					user.getPassword().substring(16),
 					ByteSource.Util.bytes(salt),
 					getName());
 			// 更新登录IP和时间
@@ -67,16 +69,15 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
     /**
      * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
      */
-    @SuppressWarnings("unchecked")
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     	Principal principal = (Principal) principals.fromRealm(getName()).iterator().next();
     	String loginName = principal.getLoginName();
-    	Record user = systemService.getUserByLoginName(loginName);
+    	User user = systemService.getUserByLoginName(loginName);
 		if (user != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-			List<Record> list = UserUtils.getMenuList();
-			for (Record menu : list){
-				String permission = menu.getStr("permission");
+			List<Menu> list = UserUtils.getMenuList();
+			for (Menu menu : list){
+				String permission = menu.getPermission();
 				if (StringUtils.isNotBlank(permission)){
 					// 添加基于Permission的权限信息
 					for (String p : StringUtils.split(permission, ",")){
@@ -84,12 +85,10 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 					}
 				}
 			}
-			// 添加用户权限
-			//info.addStringPermission("user");
 			// 添加用户角色信息
-			List<Record> roleList = (List<Record>) user.get("role_list");
-			for (Record role : roleList){
-				info.addRole(role.getStr("enname"));
+			List<Role> roleList = (List<Role>) user.getRoleList();
+			for (Role role : roleList){
+				info.addRole(role.getEnname());
 			}
 			return info;
 		} else {
@@ -137,10 +136,10 @@ public class SystemAuthorizingRealm extends AuthorizingRealm{
 		private String loginName; // 登录名
 		private String name; // 姓名
 		
-		public Principal(Record user) {
-			this.id = user.getLong("id");
-			this.loginName = user.getStr("login_name");
-			this.name = user.getStr("name");
+		public Principal(User user) {
+			this.id = user.getId();
+			this.loginName = user.getLoginName();
+			this.name = user.getName();
 		}
 
 		public Long getId() {

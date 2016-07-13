@@ -9,19 +9,19 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
 
     public final static String TABLE_NAME = "sys_menu";
 
-    public void setId(String id) {
+    public void setId(Long id) {
         set("id", id);
     }
 
-    public Long getId(String id) {
+    public Long getId() {
         return get("id");
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         set("parent_id", parentId);
     }
 
-    public Long getParentId(String parentId) {
+    public Long getParentId() {
         return get("parent_id");
     }
 
@@ -29,7 +29,7 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("parent_ids", parentIds);
     }
 
-    public String getParentIds(String parentIds) {
+    public String getParentIds() {
         return get("parent_ids");
     }
 
@@ -37,15 +37,15 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("name", name);
     }
 
-    public String getName(String name) {
+    public String getName() {
         return get("name");
     }
 
-    public void setSort(String sort) {
+    public void setSort(java.math.BigDecimal sort) {
         set("sort", sort);
     }
 
-    public java.math.BigDecimal getSort(String sort) {
+    public java.math.BigDecimal getSort() {
         return get("sort");
     }
 
@@ -53,7 +53,7 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("href", href);
     }
 
-    public String getHref(String href) {
+    public String getHref() {
         return get("href");
     }
 
@@ -61,7 +61,7 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("target", target);
     }
 
-    public String getTarget(String target) {
+    public String getTarget() {
         return get("target");
     }
 
@@ -69,7 +69,7 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("icon", icon);
     }
 
-    public String getIcon(String icon) {
+    public String getIcon() {
         return get("icon");
     }
 
@@ -77,7 +77,7 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("is_show", isShow);
     }
 
-    public String getIsShow(String isShow) {
+    public String getIsShow() {
         return get("is_show");
     }
 
@@ -85,39 +85,39 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("permission", permission);
     }
 
-    public String getPermission(String permission) {
+    public String getPermission() {
         return get("permission");
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(Long createBy) {
         set("create_by", createBy);
     }
 
-    public Long getCreateBy(String createBy) {
+    public Long getCreateBy() {
         return get("create_by");
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(java.util.Date createDate) {
         set("create_date", createDate);
     }
 
-    public java.util.Date getCreateDate(String createDate) {
+    public java.util.Date getCreateDate() {
         return get("create_date");
     }
 
-    public void setUpdateBy(String updateBy) {
+    public void setUpdateBy(Long updateBy) {
         set("update_by", updateBy);
     }
 
-    public Long getUpdateBy(String updateBy) {
+    public Long getUpdateBy() {
         return get("update_by");
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(java.util.Date updateDate) {
         set("update_date", updateDate);
     }
 
-    public java.util.Date getUpdateDate(String updateDate) {
+    public java.util.Date getUpdateDate() {
         return get("update_date");
     }
 
@@ -125,7 +125,7 @@ public abstract class BaseMenu<M extends BaseMenu<M>> extends BaseModel<M> imple
         set("remarks", remarks);
     }
 
-    public String getRemarks(String remarks) {
+    public String getRemarks() {
         return get("remarks");
     }
 

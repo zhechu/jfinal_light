@@ -15,22 +15,22 @@ public class SysUserInfoValidator extends BaseValidator {
 		Boolean is_save = c.getParaToBoolean("is_save");
 		if (is_save!=null && is_save) { // 提交表单时，再验证
 			this.validateToken("userInfoToken", "message", "上次已保存，请不要重复提交");
-			this.validateRequiredString("name", "message", "请填写姓名");
-			this.validateString("name", 1, 50, "message", "姓名不能超过50个字符");
-			this.validateRequiredString("email", "message", "请填写邮箱");
-			this.validateString("email", 0, 50, "message", "邮箱不能超过50个字符");
-			this.validateEmail("email", "message", "请输入正确格式的电子邮件");
-			String phone = c.getPara("phone");
+			this.validateRequiredString("user.name", "message", "请填写姓名");
+			this.validateString("user.name", 1, 50, "message", "姓名不能超过50个字符");
+			this.validateRequiredString("user.email", "message", "请填写邮箱");
+			this.validateString("user.email", 0, 50, "message", "邮箱不能超过50个字符");
+			this.validateEmail("user.email", "message", "请输入正确格式的电子邮件");
+			String phone = c.getPara("user.phone");
 			if (StrKit.notBlank(phone)) {
-				this.validateString("phone", 0, 50, "message", "电话不能超过50个字符");
-				this.validateTelephone("phone", "message", "请输入正确格式的电话");
+				this.validateString("user.phone", 0, 50, "message", "电话不能超过50个字符");
+				this.validateTelephone("user.phone", "message", "请输入正确格式的电话");
 			}
-			this.validateRequiredString("mobile", "message", "请填写手机");
-			this.validateString("mobile", 0, 50, "message", "手机不能超过50个字符");
-			this.validateMobilephone("mobile", "message", "请输入正确格式的手机");
-			String remarks = c.getPara("remarks");
+			this.validateRequiredString("user.mobile", "message", "请填写手机");
+			this.validateString("user.mobile", 0, 50, "message", "手机不能超过50个字符");
+			this.validateMobilephone("user.mobile", "message", "请输入正确格式的手机");
+			String remarks = c.getPara("user.remarks");
 			if (StrKit.notBlank(remarks)) {
-				this.validateString("remarks", 0, 200, "message", "备注不能超过200个字符");
+				this.validateString("user.remarks", 0, 200, "message", "备注不能超过200个字符");
 			}
 		}
 	}

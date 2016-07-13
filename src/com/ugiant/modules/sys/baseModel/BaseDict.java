@@ -9,11 +9,11 @@ public abstract class BaseDict<M extends BaseDict<M>> extends BaseModel<M> imple
 
     public final static String TABLE_NAME = "sys_dict";
 
-    public void setId(String id) {
+    public void setId(Long id) {
         set("id", id);
     }
 
-    public Long getId(String id) {
+    public Long getId() {
         return get("id");
     }
 
@@ -21,7 +21,7 @@ public abstract class BaseDict<M extends BaseDict<M>> extends BaseModel<M> imple
         set("value", value);
     }
 
-    public String getValue(String value) {
+    public String getValue() {
         return get("value");
     }
 
@@ -29,7 +29,7 @@ public abstract class BaseDict<M extends BaseDict<M>> extends BaseModel<M> imple
         set("label", label);
     }
 
-    public String getLabel(String label) {
+    public String getLabel() {
         return get("label");
     }
 
@@ -37,7 +37,7 @@ public abstract class BaseDict<M extends BaseDict<M>> extends BaseModel<M> imple
         set("type", type);
     }
 
-    public String getType(String type) {
+    public String getType() {
         return get("type");
     }
 
@@ -45,55 +45,55 @@ public abstract class BaseDict<M extends BaseDict<M>> extends BaseModel<M> imple
         set("description", description);
     }
 
-    public String getDescription(String description) {
+    public String getDescription() {
         return get("description");
     }
 
-    public void setSort(String sort) {
+    public void setSort(java.math.BigDecimal sort) {
         set("sort", sort);
     }
 
-    public java.math.BigDecimal getSort(String sort) {
+    public java.math.BigDecimal getSort() {
         return get("sort");
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         set("parent_id", parentId);
     }
 
-    public Long getParentId(String parentId) {
+    public Long getParentId() {
         return get("parent_id");
     }
 
-    public void setCreateBy(String createBy) {
+    public void setCreateBy(Long createBy) {
         set("create_by", createBy);
     }
 
-    public Long getCreateBy(String createBy) {
+    public Long getCreateBy() {
         return get("create_by");
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(java.util.Date createDate) {
         set("create_date", createDate);
     }
 
-    public java.util.Date getCreateDate(String createDate) {
+    public java.util.Date getCreateDate() {
         return get("create_date");
     }
 
-    public void setUpdateBy(String updateBy) {
+    public void setUpdateBy(Long updateBy) {
         set("update_by", updateBy);
     }
 
-    public Long getUpdateBy(String updateBy) {
+    public Long getUpdateBy() {
         return get("update_by");
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(java.util.Date updateDate) {
         set("update_date", updateDate);
     }
 
-    public java.util.Date getUpdateDate(String updateDate) {
+    public java.util.Date getUpdateDate() {
         return get("update_date");
     }
 
@@ -101,7 +101,7 @@ public abstract class BaseDict<M extends BaseDict<M>> extends BaseModel<M> imple
         set("remarks", remarks);
     }
 
-    public String getRemarks(String remarks) {
+    public String getRemarks() {
         return get("remarks");
     }
 

@@ -1,15 +1,17 @@
 package com.ugiant.modules.sys.model;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Record;
-import com.ugiant.common.model.BaseModel;
+import com.ugiant.modules.sys.baseModel.BaseUserRole;
 
 /**
  * 用户角色 model
  * @author lingyuwang
  *
  */
-public class UserRole extends BaseModel<UserRole> {
+public class UserRole extends BaseUserRole<UserRole> {
 	
 	private static final long serialVersionUID = 5811814534062497587L;
 	
@@ -20,21 +22,23 @@ public class UserRole extends BaseModel<UserRole> {
 	 * @param userRole
 	 * @return
 	 */
-	public boolean delete(Record userRole) {
+	@Override
+	public boolean delete() {
+		List<Object> paras = Lists.newArrayList();
 		StringBuilder sql = new StringBuilder();
 		sql.append("delete from sys_user_role where 1 = 1");
-		Long user_id = userRole.getLong("user_id");
-		if (user_id != null) {
-			sql.append(" and user_id = ").append(user_id);
+		Long userId = this.getUserId();
+		if (userId != null) {
+			sql.append(" and user_id = ?");
+			paras.add(userId);
 		}
-		Long role_id = userRole.getLong("role_id");
-		if (role_id != null) {
-			sql.append(" and role_id = ").append(role_id);
+		Long roleId = this.getRoleId();
+		if (roleId != null) {
+			sql.append(" and role_id = ?");
+			paras.add(roleId);
 		}
-		if (Db.update(sql.toString()) > 0) {
-			return true;
-		}
-		return false;
+		int result = Db.update(sql.toString(), paras.toArray());
+		return result>0 ? true : false;
 	}
 	
 	/**
@@ -43,9 +47,8 @@ public class UserRole extends BaseModel<UserRole> {
 	 * @return
 	 */
 	public boolean deleteByUserId(Long userId) {
-		Record userRole = new Record();
-		userRole.set("user_id", userId);
-		return delete(userRole);
+		int result = Db.update("delete from sys_user_role where user_id = ?", userId);
+		return result>0 ? true : false;
 	}
 	
 	/**
@@ -54,18 +57,19 @@ public class UserRole extends BaseModel<UserRole> {
 	 * @return
 	 */
 	public boolean deleteByRoleId(Long roleId) {
-		Record userRole = new Record();
-		userRole.set("role_id", roleId);
-		return delete(userRole);
+		int result = Db.update("delete from sys_user_role where role_id = ?", roleId);
+		return result>0 ? true : false;
 	}
 	
 	/**
 	 * 添加用户角色
-	 * @param role
+	 * @param userRole
 	 * @return
 	 */
-	public boolean save(Record role) {
-		return Db.save("sys_user_role", role);
+	@Override
+	public boolean save() {
+		int result = Db.update("insert into sys_user_role (user_id, role_id) values (?, ?)", this.getUserId(), this.getRoleId());
+		return result>0 ? true : false;
 	}
 	
 }

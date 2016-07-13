@@ -4,18 +4,16 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
-import com.ugiant.common.model.BaseModel;
 import com.ugiant.common.utils.PageUtils;
+import com.ugiant.modules.sys.baseModel.BaseDict;
 
 /**
  * 字典 model
  * @author lingyuwang
  *
  */
-public class Dict extends BaseModel<Dict> {
+public class Dict extends BaseDict<Dict> {
 	
 	private static final long serialVersionUID = 1681584707732812683L;
 	
@@ -26,26 +24,26 @@ public class Dict extends BaseModel<Dict> {
 	 * @param type 类型
 	 * @return
 	 */
-	public List<Record> findByType(String type) {
+	public List<Dict> findByType(String type) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select a.*");
 		sql.append(" from sys_dict a");
 		sql.append(" where a.type = ?");
 		sql.append(" order by a.type, a.sort, a.update_date desc");
-		return Db.find(sql.toString(), type);
+		return find(sql.toString(), type);
 	}
 	
 	/**
 	 * 查询字典类型列表
 	 * @return
 	 */
-	public List<Record> findTypeList() {
+	public List<Dict> findTypeList() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select type");
 		sql.append(" from sys_dict a");
 		sql.append(" group by a.type");
 		sql.append(" order by a.type");
-		return Db.find(sql.toString());
+		return find(sql.toString());
 	} 
 
 	/**
@@ -55,21 +53,21 @@ public class Dict extends BaseModel<Dict> {
 	 * @param dict 字典对象
 	 * @return
 	 */
-	public Page<Record> findPageByDict(int pageNo, int pageSize, Dict dict) {
+	public Page<Dict> findPageByDict(int pageNo, int pageSize, Dict dict) {
 		StringBuilder select = new StringBuilder();
 		select.append("select a.*");
 		StringBuilder sqlExceptSelect = new StringBuilder();
 		sqlExceptSelect.append(" from sys_dict a");
 		sqlExceptSelect.append(" where 1 = 1");
-		String type = dict.getStr("type");
+		String type = dict.getType();
 		if (StringUtils.isNotBlank(type)) {
 			sqlExceptSelect.append(" and a.type = ").append(type);
 		}
-		String description = dict.getStr("description");
+		String description = dict.getDescription();
 		if (StringUtils.isNotBlank(description)) {
 			sqlExceptSelect.append(" and a.description = ").append(description);
 		}
-		return PageUtils.getPage(pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
+		return PageUtils.getPage(dao, pageNo, pageSize, select.toString(), sqlExceptSelect.toString());
 	}
 	
 }

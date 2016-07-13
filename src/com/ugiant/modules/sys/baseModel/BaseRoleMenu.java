@@ -9,19 +9,19 @@ public abstract class BaseRoleMenu<M extends BaseRoleMenu<M>> extends BaseModel<
 
     public final static String TABLE_NAME = "sys_role_menu";
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(Long roleId) {
         set("role_id", roleId);
     }
 
-    public Long getRoleId(String roleId) {
+    public Long getRoleId() {
         return get("role_id");
     }
 
-    public void setMenuId(String menuId) {
+    public void setMenuId(Long menuId) {
         set("menu_id", menuId);
     }
 
-    public Long getMenuId(String menuId) {
+    public Long getMenuId() {
         return get("menu_id");
     }
 

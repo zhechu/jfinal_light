@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jfinal.plugin.activerecord.Record;
 import com.ugiant.modules.sys.model.Dict;
 
 /**
@@ -30,9 +29,9 @@ public class DictUtils {
 	 */
 	public static String getDictLabel(String value, String type, String defaultValue){
 		if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(value)){
-			for (Record dict : getDictList(type)){
-				if (type.equals(dict.getStr("type")) && value.equals(dict.getStr("value"))){
-					return dict.getStr("label");
+			for (Dict dict : getDictList(type)){
+				if (type.equals(dict.getType()) && value.equals(dict.getValue())){
+					return dict.getLabel();
 				}
 			}
 		}
@@ -66,9 +65,9 @@ public class DictUtils {
 	 */
 	public static String getDictValue(String label, String type, String defaultLabel){
 		if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(label)){
-			for (Record dict : getDictList(type)){
-				if (type.equals(dict.getStr("type")) && label.equals(dict.getStr("label"))){
-					return dict.getStr("value");
+			for (Dict dict : getDictList(type)){
+				if (type.equals(dict.getType()) && label.equals(dict.getLabel())){
+					return dict.getValue();
 				}
 			}
 		}
@@ -80,17 +79,17 @@ public class DictUtils {
 	 * @param type 类型
 	 * @return
 	 */
-	public static List<Record> getDictList(String type){
-		Map<String, List<Record>> dictMap = Maps.newHashMap();
-		for (Record dict : dictDao.findByType(type)){
-			List<Record> dictList = dictMap.get(dict.getStr("type"));
+	public static List<Dict> getDictList(String type){
+		Map<String, List<Dict>> dictMap = Maps.newHashMap();
+		for (Dict dict : dictDao.findByType(type)){
+			List<Dict> dictList = dictMap.get(dict.getType());
 			if (dictList != null){
 				dictList.add(dict);
 			} else{
-				dictMap.put(dict.getStr("type"), Lists.newArrayList(dict));
+				dictMap.put(dict.getType(), Lists.newArrayList(dict));
 			}
 		}
-		List<Record> dictList = dictMap.get(type);
+		List<Dict> dictList = dictMap.get(type);
 		if (dictList == null){
 			dictList = Lists.newArrayList();
 		}
